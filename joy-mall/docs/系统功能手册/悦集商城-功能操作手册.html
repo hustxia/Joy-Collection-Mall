@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>悦集商城 功能操作手册 V15</title>
+<style>
+  :root{
+    --brand:#e8452f; --brand-dark:#c93520; --ink:#1f2328; --ink-2:#4a5158;
+    --ink-3:#7a828a; --line:#e9e6e3; --bg:#ffffff; --bg-soft:#faf8f6;
+    --note:#fff8e6; --note-line:#f0d9a0; --tip:#eef7f1; --tip-line:#bfe0cb;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:15px/1.75 "PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--brand); text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* 侧边目录 */
+  .toc{
+    position:fixed; left:0; top:0; bottom:0; width:250px; padding:26px 18px 40px;
+    background:var(--bg-soft); border-right:1px solid var(--line); overflow-y:auto;
+  }
+  .toc h4{margin:0 0 14px; font-size:13px; letter-spacing:.08em; color:var(--ink-3); font-weight:600}
+  .toc .brandline{display:flex; align-items:center; gap:8px; margin-bottom:18px}
+  .toc .dot{width:10px; height:10px; border-radius:3px; background:var(--brand)}
+  .toc .brandline b{font-size:15px}
+  .toc ol{list-style:none; margin:0; padding:0; font-size:13.5px}
+  .toc ol li{margin:2px 0}
+  .toc ol li a{display:block; padding:5px 8px; border-radius:6px; color:var(--ink-2)}
+  .toc ol li a:hover{background:#f1ece8; text-decoration:none; color:var(--brand-dark)}
+  .toc ol ol{padding-left:10px; font-size:12.8px}
+  .toc ol ol a{color:var(--ink-3); padding:3px 8px}
+
+  .page{margin-left:250px; max-width:1120px; padding:0 56px 90px}
+
+  /* 封面 */
+  .cover{padding:64px 0 40px; border-bottom:1px solid var(--line); margin-bottom:44px}
+  .kicker{display:inline-block; font-size:12.5px; letter-spacing:.14em; color:var(--brand); font-weight:700; margin-bottom:16px}
+  .cover h1{font-size:42px; line-height:1.25; margin:0 0 14px; letter-spacing:-.5px}
+  .cover .sub{font-size:17px; color:var(--ink-2); margin:0 0 30px}
+  .meta{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:8px}
+  .meta div{background:var(--bg-soft); border:1px solid var(--line); border-radius:10px; padding:12px 14px}
+  .meta span{display:block; font-size:12px; color:var(--ink-3); margin-bottom:4px}
+  .meta b{font-size:14.5px; font-weight:600}
+
+  h2{font-size:26px; margin:56px 0 6px; padding-top:12px; letter-spacing:-.3px; scroll-margin-top:20px}
+  h2 .num{color:var(--brand); margin-right:10px; font-weight:800}
+  h2 + .lead{color:var(--ink-2); margin:0 0 22px; font-size:14.5px}
+  h3{font-size:19px; margin:38px 0 10px; scroll-margin-top:20px}
+  h3 .sn{color:var(--brand); font-weight:700; margin-right:8px}
+  h4{font-size:15.5px; margin:24px 0 8px; color:var(--ink)}
+
+  p{margin:10px 0}
+  ul,ol{margin:10px 0; padding-left:22px}
+  li{margin:5px 0}
+  code{background:#f4f1ee; padding:1px 6px; border-radius:4px; font-size:13px;
+       font-family:Consolas,"Courier New",monospace; color:#a4402c}
+
+  table{border-collapse:collapse; width:100%; margin:16px 0; font-size:14px}
+  th,td{border:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top}
+  th{background:var(--bg-soft); font-weight:600; color:var(--ink-2); white-space:nowrap}
+  tbody tr:nth-child(even){background:#fcfbfa}
+
+  figure{margin:22px 0 26px}
+  figure img{width:100%; display:block; border:1px solid var(--line); border-radius:10px;
+             box-shadow:0 6px 22px rgba(31,35,40,.08)}
+  figure.h5 img{width:390px; max-width:100%; border-radius:14px}
+  figcaption{margin-top:9px; font-size:12.8px; color:var(--ink-3); text-align:center}
+  .shot-pair{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start}
+  @media (max-width:1200px){ .shot-pair{grid-template-columns:1fr} }
+
+  .note,.tip{border-radius:9px; padding:12px 16px; margin:16px 0; font-size:14px}
+  .note{background:var(--note); border:1px solid var(--note-line)}
+  .tip{background:var(--tip); border:1px solid var(--tip-line)}
+  .note b,.tip b{display:block; margin-bottom:4px; font-size:13px; letter-spacing:.02em}
+
+  .steps{counter-reset:s; list-style:none; padding:0; margin:14px 0}
+  .steps li{counter-increment:s; position:relative; padding-left:34px; margin:9px 0}
+  .steps li::before{content:counter(s); position:absolute; left:0; top:2px; width:22px; height:22px;
+    border-radius:50%; background:var(--brand); color:#fff; font-size:12.5px; font-weight:700;
+    display:flex; align-items:center; justify-content:center}
+
+  .arch{display:flex; flex-direction:column; gap:10px; margin:20px 0 8px; font-size:13.5px}
+  .arch .row{display:flex; gap:10px; flex-wrap:wrap}
+  .arch .box{flex:1; min-width:120px; border:1px solid var(--line); border-radius:9px;
+             padding:10px 12px; background:var(--bg-soft); text-align:center}
+  .arch .box b{display:block; font-size:14px}
+  .arch .box i{font-style:normal; color:var(--ink-3); font-size:12px}
+  .arch .gate{border-color:#f0c3b8; background:#fff4f1}
+  .arch .arrow{text-align:center; color:var(--ink-3); font-size:12px}
+
+  .badge{display:inline-block; font-size:11.5px; padding:1px 8px; border-radius:20px;
+         background:#f1ece8; color:var(--ink-2); margin-left:6px; vertical-align:2px}
+  .badge.dev{background:#fdeceb; color:#c93520}
+
+  footer{margin-top:60px; padding-top:18px; border-top:1px solid var(--line);
+         font-size:12.8px; color:var(--ink-3)}
+
+  @media print{
+    .toc{display:none} .page{margin:0; max-width:none; padding:0 12mm}
+    figure img{box-shadow:none} h2{page-break-after:avoid} figure{page-break-inside:avoid}
+  }
+  @media (max-width:900px){
+    .toc{display:none} .page{margin:0; padding:0 20px 60px} .meta{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<nav class="toc">
+  <div class="brandline"><span class="dot"></span><b>悦集商城</b></div>
+  <h4>功能操作手册 · V15</h4>
+  <ol>
+    <li><a href="#s1">1 系统概览</a>
+      <ol>
+        <li><a href="#s1-1">1.1 三端四入口</a></li>
+        <li><a href="#s1-2">1.2 架构与数据流</a></li>
+        <li><a href="#s1-3">1.3 演示账号</a></li>
+        <li><a href="#s1-4">1.4 启动与探活</a></li>
+      </ol>
+    </li>
+    <li><a href="#s2">2 C 端操作（H5 / PC）</a>
+      <ol>
+        <li><a href="#s2-1">2.1 首页与导航</a></li>
+        <li><a href="#s2-2">2.2 分类与商品列表</a></li>
+        <li><a href="#s2-3">2.3 商品详情与 SKU</a></li>
+        <li><a href="#s2-4">2.4 购物车</a></li>
+        <li><a href="#s2-5">2.5 领券与用券</a></li>
+        <li><a href="#s2-6">2.6 下单与模拟支付</a></li>
+        <li><a href="#s2-7">2.7 我的订单</a></li>
+        <li><a href="#s2-8">2.8 订单详情与时间线</a></li>
+        <li><a href="#s2-9">2.9 售后申请与查询</a></li>
+        <li><a href="#s2-10">2.10 积分与签到</a></li>
+        <li><a href="#s2-11">2.11 收藏 / 足迹 / 评价</a></li>
+        <li><a href="#s2-12">2.12 消息中心</a></li>
+        <li><a href="#s2-13">2.13 地址管理</a></li>
+        <li><a href="#s2-14">2.14 个人中心</a></li>
+        <li><a href="#s2-15">2.15 店铺主页与跨店购物</a></li>
+        <li><a href="#s2-16">2.16 限时秒杀</a></li>
+        <li><a href="#s2-17">2.17 拼团</a></li>
+        <li><a href="#s2-18">2.18 幸运抽奖</a></li>
+        <li><a href="#s2-19">2.19 分销中心</a></li>
+        <li><a href="#s2-20">2.20 评价增强</a></li>
+      </ol>
+    </li>
+    <li><a href="#s3">3 运营后台操作</a>
+      <ol>
+        <li><a href="#s3-1">3.1 登录</a></li>
+        <li><a href="#s3-2">3.2 工作台与经营看板</a></li>
+        <li><a href="#s3-3">3.3 商品管理</a></li>
+        <li><a href="#s3-4">3.4 订单管理</a></li>
+        <li><a href="#s3-5">3.5 售后审核</a></li>
+        <li><a href="#s3-6">3.6 优惠券</a></li>
+        <li><a href="#s3-7">3.7 会员管理</a></li>
+        <li><a href="#s3-8">3.8 评价管理</a></li>
+        <li><a href="#s3-9">3.9 消息与地址</a></li>
+        <li><a href="#s3-10">3.10 商户入驻</a></li>
+        <li><a href="#s3-11">3.11 商家结算</a></li>
+        <li><a href="#s3-12">3.12 商家提现</a></li>
+        <li><a href="#s3-13">3.13 运费模板</a></li>
+        <li><a href="#s3-14">3.14 发货工作台</a></li>
+        <li><a href="#s3-15">3.15 发票管理</a></li>
+        <li><a href="#s3-16">3.16 支付流水与对账</a></li>
+        <li><a href="#s3-17">3.17 促销活动</a></li>
+        <li><a href="#s3-18">3.18 会员等级</a></li>
+        <li><a href="#s3-19">3.19 秒杀 / 拼团 / 抽奖管理</a></li>
+        <li><a href="#s3-20">3.20 分销管理</a></li>
+        <li><a href="#s3-21">3.21 客服工单</a></li>
+        <li><a href="#s3-22">3.22 消息触达</a></li>
+      </ol>
+    </li>
+    <li><a href="#s4">4 商家中心（V14）</a>
+      <ol>
+        <li><a href="#s4-1">4.1 入口与登录</a></li>
+        <li><a href="#s4-2">4.2 经营概览</a></li>
+        <li><a href="#s4-3">4.3 商品管理</a></li>
+        <li><a href="#s4-4">4.4 订单与发货</a></li>
+        <li><a href="#s4-5">4.5 售后审核</a></li>
+        <li><a href="#s4-6">4.6 结算与提现</a></li>
+      </ol>
+    </li>
+    <li><a href="#s5">5 状态机与业务规则</a></li>
+    <li><a href="#s6">6 常见问题</a></li>
+    <li><a href="#s7">7 附录</a></li>
+  </ol>
+</nav>
+
+<main class="page">
+
+  <header class="cover">
+    <div class="kicker">JOY COLLECTION MALL · 三端一体 + 商家中心</div>
+    <h1>悦集商城<br>功能操作手册</h1>
+    <p class="sub">覆盖 H5 商城、PC 商城、运营后台、商家中心四端入口的完整操作说明，含 74 张实拍界面截图、状态机口径与常见问题。</p>
+    <div class="meta">
+      <div><span>适用版本</span><b>V15（评价 / 售后 / 促销展示）</b></div>
+      <div><span>后端架构</span><b>9 服务 + 网关（微服务）</b></div>
+      <div><span>截图环境</span><b>本地全栈实跑</b></div>
+      <div><span>编制日期</span><b>2026-11-02</b></div>
+    </div>
+  </header>
+
+  <!-- ══════════════ 1 ══════════════ -->
+  <h2 id="s1"><span class="num">01</span>系统概览</h2>
+  <p class="lead">悦集商城是一套前后端分离、多端一体的电商系统：买家在 H5 或 PC 端逛商品、加购物车、领券下单、模拟支付、申请售后；运营在后台管理商品、订单、售后、优惠券、评价与营销活动；商家在独立的商家中心自助发品、发货、审核售后、结算提现。</p>
+
+  <h3 id="s1-1"><span class="sn">1.1</span>三端四入口</h3>
+  <table>
+    <thead><tr><th>端</th><th>访问地址</th><th>技术栈</th><th>使用者</th><th>主要能力</th></tr></thead>
+    <tbody>
+      <tr><td>H5 商城</td><td><code>http://localhost:9531</code></td><td>Vue3 + Vant4 + Vite</td><td>买家（移动端）</td><td>逛商品、购物车、下单支付、售后、积分签到、消息、收藏、秒杀/拼团/抽奖/分销</td></tr>
+      <tr><td>PC 商城</td><td><code>http://localhost:9432</code></td><td>Vue2.7 + Element UI</td><td>买家（桌面端）</td><td>同上，功能与 H5 对齐，布局更宽</td></tr>
+      <tr><td>运营后台</td><td><code>http://localhost:9431</code></td><td>Vue2.7 + Element UI</td><td>运营 / 管理员</td><td>商品、订单、售后、营销、会员、商家、交易、客服 8 组菜单</td></tr>
+      <tr><td>商家中心</td><td><code>http://localhost:9431/#/merchant/login</code></td><td>与后台同工程，独立会话</td><td>商家店主</td><td>经营概览、自助发品、订单发货、售后审核、结算提现</td></tr>
+      <tr><td>统一网关</td><td><code>http://127.0.0.1:8080</code></td><td>Spring Cloud Gateway</td><td>系统内部</td><td>多端唯一后端入口，按前缀路由到各业务服务</td></tr>
+    </tbody>
+  </table>
+  <div class="note"><b>注意</b>H5 端 Vite 只监听 <code>::1</code>，请通过 <code>http://localhost:9531</code> 访问；用 <code>127.0.0.1</code> 或局域网 IP 会连不上。商家中心与运营后台共用 9431 端口，但<b>登录账号与会话完全独立</b>（见 4.1）。</div>
+
+  <h3 id="s1-2"><span class="sn">1.2</span>架构与数据流</h3>
+  <p>后端按业务域拆成 9 个服务，各自独占写自己的表；服务之间只通过 <code>mall-common</code> 中的 Feign 契约通信，不共享代码依赖。</p>
+  <div class="arch">
+    <div class="row">
+      <div class="box"><b>mall-shop :9531</b><i>H5 商城</i></div>
+      <div class="box"><b>mall-pc :9432</b><i>PC 商城</i></div>
+      <div class="box"><b>mall-web :9431</b><i>运营后台 + 商家中心</i></div>
+    </div>
+    <div class="arrow">↓ HTTP + JWT（C 端 /shop/**　后台 /api/mall/**　商家 /merchant-admin/**）</div>
+    <div class="row"><div class="box gate"><b>mall-gateway :8080</b><i>统一入口 · 三方令牌分流 · 限流 · CORS</i></div></div>
+    <div class="arrow">↓ 路径前缀分发</div>
+    <div class="row">
+      <div class="box"><b>system :8201</b><i>登录鉴权 / 字典 / 文件</i></div>
+      <div class="box"><b>goods :8202</b><i>SPU / SKU / 类目 / 搜索</i></div>
+      <div class="box"><b>member :8203</b><i>会员 / 地址 / 购物车</i></div>
+      <div class="box"><b>order :8204</b><i>下单 / 支付 / 发货 / 发票</i></div>
+    </div>
+    <div class="row">
+      <div class="box"><b>marketing :8205</b><i>优惠券 / 促销引擎 / 秒杀拼团抽奖 / 分销</i></div>
+      <div class="box"><b>refund :8206</b><i>售后状态机 / 仲裁</i></div>
+      <div class="box"><b>merchant :8207</b><i>商户 / 结算 / 提现</i></div>
+    </div>
+    <div class="row">
+      <div class="box"><b>support :8208</b><i>客服工单（V14）</i></div>
+      <div class="box"><b>message :8209</b><i>消息触达 / 短信站内信 SPI（V14）</i></div>
+    </div>
+    <div class="arrow">↓ 单库 yueji_mall（MySQL 8）</div>
+  </div>
+  <div class="tip"><b>身份隔离</b>三方令牌互斥分流：会员令牌只能访问 <code>/shop/**</code>，后台令牌只能访问后台接口，商家令牌（<code>Merchant-Token</code> 头）只能访问 <code>/merchant-admin/**</code> 且被 <code>@MerchantScoped</code> 切面强制圈定在自己店铺的数据范围内，越权访问返回 403 并留痕。跨端共享的只有 <code>/uploads</code>、<code>/img</code> 图片直链。</div>
+
+  <h3 id="s1-3"><span class="sn">1.3</span>演示账号</h3>
+  <table>
+    <thead><tr><th>端</th><th>账号</th><th>密码</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>运营后台</td><td><code>admin</code></td><td><code>admin123</code></td><td>登录需输入算术验证码（如 3+5=?）</td>
+      <tr><td>商家中心</td><td><code>merchant</code></td><td><code>123456</code></td><td>「悦集自营旗舰店」演示店主，与平台后台账号不通用</td></tr>
+      <tr><td>C 端会员</td><td><code>13800000001</code> ～ <code>13800000006</code></td><td><code>123456</code></td><td>本手册截图使用 13800000001（昵称「清风徐来」）</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="s1-4"><span class="sn">1.4</span>启动与探活</h3>
+  <p>后端九件套须在 <code>be/mall-cloud</code> 目录下启动（上传目录是相对路径），前端三端分别启动；仓库提供了 <code>be/mall-cloud/start-local.sh</code> 一键启动脚本：</p>
+  <table>
+    <thead><tr><th>顺序</th><th>命令</th><th>端口</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>java -jar mall-gateway/target/mall-gateway-1.0.0.jar --server.port=8080</code></td><td>8080</td></tr>
+      <tr><td>2-10</td><td>依次启动 mall-system / goods / member / order / marketing / refund / merchant / support / message</td><td>8201-8209</td></tr>
+      <tr><td>11</td><td><code>cd fe/mall-web &amp;&amp; npm run dev</code></td><td>9431</td></tr>
+      <tr><td>12</td><td><code>cd fe/mall-pc &amp;&amp; npm run dev</code></td><td>9432</td></tr>
+      <tr><td>13</td><td><code>cd fe/mall-shop &amp;&amp; npm run dev</code></td><td>9531</td></tr>
+    </tbody>
+  </table>
+  <p>探活：<code>curl --noproxy '*' http://127.0.0.1:8080/health</code>，聚合健康检查见 <code>/health/aggregate</code>。</p>
+
+  <!-- ══════════════ 2 ══════════════ -->
+  <h2 id="s2"><span class="num">02</span>C 端操作（H5 / PC）</h2>
+  <p class="lead">H5 与 PC 的购物链路完全一致，仅布局不同。以下操作在两端通用，截图分别给出两端画面。</p>
+
+  <h3 id="s2-1"><span class="sn">2.1</span>首页与导航</h3>
+  <p>首页由轮播图与商品推荐卡片组成，是买家进入商城的第一入口。PC 端顶部提供搜索框（带联想与热搜）、购物车角标、我的订单、领券中心与营销专区入口（秒杀 / 拼团 / 抽奖 / 分销中心）；H5 端底部为「首页 / 分类 / 购物车 / 我的」四个主 Tab。</p>
+  <figure>
+    <img src="images/pc-01-home.png" alt="PC 端首页">
+    <figcaption>图 1　PC 端首页：顶部搜索、类目导航、轮播与商品推荐</figcaption>
+  </figure>
+  <div class="shot-pair">
+    <figure class="h5"><img src="images/h5-01-home.png" alt="H5 端首页">
+      <figcaption>图 2　H5 端首页：底部四 Tab 导航</figcaption></figure>
+    <figure class="h5"><img src="images/h5-02-category.png" alt="H5 分类页">
+      <figcaption>图 3　H5 端分类页：左侧一级类目、右侧二级类目</figcaption></figure>
+  </div>
+  <div class="tip"><b>无需登录即可浏览</b>首页、分类、商品列表/详情、领券中心均为公开页面；点进购物车、下单、我的订单等页面时才会跳转登录，登录后自动回到原页面。</div>
+
+  <h3 id="s2-2"><span class="sn">2.2</span>分类与商品列表</h3>
+  <p>从首页类目或分类页进入商品列表。列表支持按类目筛选——选择一级类目时自动包含其下所有子类目商品，分页每页最多 60 条。搜索框输入关键词后进入搜索结果页：关键词经过<b>同义词与拼音归一</b>（如搜「shouji」也能命中「手机」），下方展示<b>热搜词</b>，无结果时按类目兜底推荐。</p>
+  <figure>
+    <img src="images/pc-02-list.png" alt="PC 商品列表">
+    <figcaption>图 4　PC 端商品列表：类目筛选 + 商品卡片（价格、销量、库存）</figcaption>
+  </figure>
+
+  <h3 id="s2-3"><span class="sn">2.3</span>商品详情与 SKU</h3>
+  <p>详情页展示商品主图/轮播图、价格区间、销量、品牌、类目与商品编号。买家必须先选择规格（如「颜色-曜石黑 / 存储-16G+256G」）才能加入购物车或立即购买，不同规格对应各自的价格与库存。</p>
+  <p><b>V15 促销展示</b>：商品命中促销活动时，卡片与详情页会出现活动角标（如「满减」「限时折扣」），价格区展示<b>活动价与划线价</b>；限时折扣类活动附带<b>倒计时</b>，活动结束后价格自动恢复原价。</p>
+  <figure>
+    <img src="images/pc-03-detail.png" alt="PC 商品详情">
+    <figcaption>图 5　PC 端商品详情：「悦集 X7 Pro 旗舰手机」三档规格，价格 ¥3999-4999</figcaption>
+  </figure>
+  <figure class="h5">
+    <img src="images/h5-03-detail.png" alt="H5 商品详情">
+    <figcaption>图 6　H5 端商品详情（长图）：规格选择、促销信息与评价区</figcaption>
+  </figure>
+  <ul>
+    <li>价格在数据库中以「分」存储，页面统一换算为「元」展示。</li>
+    <li>未选规格时按钮置灰并提示「请先选择规格」；收藏按钮可直接点亮「已收藏」。</li>
+    <li>商品图加载失败会自动回落到占位图，不影响下单。</li>
+  </ul>
+
+  <h3 id="s2-4"><span class="sn">2.4</span>购物车</h3>
+  <p>购物车按 SKU 维度记录商品，可修改数量、勾选/取消勾选、删除条目。底部结算栏实时按勾选商品合计金额。<b>V14 购物车营销</b>：临近促销门槛时给出「还差 X 元可用满减券/满减活动」的<b>凑单提示</b>；商品降价时显示<b>降价提醒</b>标；失效商品（下架/删库）自动归入<b>失效分区</b>，不再计入合计。</p>
+  <div class="shot-pair">
+    <figure><img src="images/pc-04-cart.png" alt="PC 购物车">
+      <figcaption>图 7　PC 端购物车：全选、数量增减、去结算</figcaption></figure>
+    <figure class="h5"><img src="images/h5-04-cart.png" alt="H5 购物车">
+      <figcaption>图 8　H5 端购物车：卡片式 + 底部结算条</figcaption></figure>
+  </div>
+  <div class="note"><b>库存口径</b>加入购物车不占库存，提交订单时才扣减 SKU 库存；若库存不足，提交会被拒绝并提示。</div>
+
+  <h3 id="s2-5"><span class="sn">2.5</span>领券与用券</h3>
+  <p>领券中心列出当前可领的券模板（面额、门槛、有效期、剩余数量），点击「领取」即进入「我的优惠券」。下单确认页可选择可用券，系统按门槛自动过滤不可用券。</p>
+  <figure>
+    <img src="images/pc-07-coupon.png" alt="PC 领券中心">
+    <figcaption>图 9　PC 端领券中心：券面额、使用门槛与领取按钮</figcaption>
+  </figure>
+  <figure class="h5">
+    <img src="images/h5-10-coupon.png" alt="H5 领券中心">
+    <figcaption>图 10　H5 端领券中心</figcaption>
+  </figure>
+  <p>券的生命周期：<b>领取 → 下单锁定 → 支付核销 / 取消释放</b>。取消或关闭订单时，锁定的券会自动退回可用状态。</p>
+
+  <h3 id="s2-6"><span class="sn">2.6</span>下单与模拟支付</h3>
+  <ol class="steps">
+    <li>购物车勾选商品 → 点「去结算」，进入确认订单页。</li>
+    <li>选择收货地址（可现场新增/修改）、选择优惠券、核对商品明细、运费与应付金额。</li>
+    <li><b>V15 优惠试算明细</b>：确认页右侧结算区逐行展示「商品总额 → 各促销活动减免 → 促销优惠合计 → 优惠券 → 运费 → 应付金额」，每一分钱优惠都可追溯（见下图）。</li>
+    <li>提交订单：系统扣减库存、锁定优惠券，生成状态为 <b>10 待付款</b> 的订单；促销减免按「最大余数法」分摊到每个订单行。</li>
+    <li>进入收银台选择支付渠道（沙箱秒到账；微信 / 支付宝配置商户参数后可用），点「立即支付」，订单变为 <b>20 待发货</b>。金额以服务端核价为准，URL 传参改不了。</li>
+    <li>订单完成后可在详情页<b>申请开票</b>，已发货订单可查看<b>分包裹物流轨迹</b>。</li>
+  </ol>
+  <div class="shot-pair">
+    <figure><img src="images/pc-19-confirm.png" alt="PC 确认订单">
+      <figcaption>图 11　PC 端确认订单：满减 −¥20.00、促销优惠合计、已满 ¥99 免运费、应付 ¥3999</figcaption></figure>
+    <figure class="h5"><img src="images/h5-22-confirm.png" alt="H5 确认订单">
+      <figcaption>图 12　H5 端确认订单：「满减 全场满100减20 −¥20.00」试算明细 + 促销后小计</figcaption></figure>
+  </div>
+  <div class="note"><b>超时关单</b>订单 30 分钟未支付，定时任务自动把订单置为 <b>60 已关闭</b>，同时回补库存、释放优惠券；若渠道回调迟到，已关单订单不会被复活，而是自动原路退款。</div>
+
+  <h3 id="s2-7"><span class="sn">2.7</span>我的订单</h3>
+  <p>订单列表按状态分 Tab：全部 / 待付款 / 待发货 / 已发货 / 已完成。每张订单卡显示下单时间、订单号、商品缩略图与数量、实付金额，右侧为状态与「订单详情」入口；有售后记录的订单会额外出现「售后」角标。</p>
+  <figure>
+    <img src="images/pc-05-orders.png" alt="PC 我的订单">
+    <figcaption>图 13　PC 端我的订单：状态 Tab + 订单卡片 + 售后角标</figcaption>
+  </figure>
+  <figure class="h5">
+    <img src="images/h5-06-orders.png" alt="H5 我的订单">
+    <figcaption>图 14　H5 端订单列表：顶部状态筛选，卡片式展示</figcaption>
+  </figure>
+  <p>可执行操作：<b>取消订单</b>（仅待付款）、<b>确认收货</b>（已发货 → 已完成）、<b>申请售后</b>（已发货/已完成）、<b>再次购买</b>。</p>
+
+  <h3 id="s2-8"><span class="sn">2.8</span>订单详情与时间线</h3>
+  <p>订单详情聚合收货信息、商品明细、金额构成（商品总额、促销优惠、运费、优惠、实付）与操作时间线。时间线按事件逐条记录操作方与时间，便于售后追溯。</p>
+  <figure>
+    <img src="images/pc-06-order-detail.png" alt="PC 订单详情">
+    <figcaption>图 15　PC 端订单详情：订单信息、金额构成、状态时间线、售后入口</figcaption>
+  </figure>
+
+  <h3 id="s2-9"><span class="sn">2.9</span>售后申请与查询</h3>
+  <p>售后入口在订单详情页。仅<b>本人订单</b>、状态为 <b>30 已发货</b> 或 <b>40 已完成</b>、且当前无进行中售后单时才可申请。</p>
+  <table>
+    <thead><tr><th>售后类型</th><th>规则</th></tr></thead>
+    <tbody>
+      <tr><td>1 仅退款</td><td>货不要了，库存不回补；金额自动带出订单实付，不可修改</td></tr>
+      <tr><td>2 退货退款</td><td>货已回，退款时回补库存；金额自动带出订单实付</td></tr>
+      <tr><td>3 换货 <span class="badge">V15</span></td><td>审核通过后按页面提示<b>寄回原商品</b>并填写物流单号 → 商家确认收货 → 商家发出换货商品；换货不产生退款</td></tr>
+      <tr><td>部分退款 <span class="badge">V15</span></td><td>按<b>订单项</b>勾选并填写退款金额（单价 × 数量为上限）；同一订单可多次申请，累计不可超过实付金额</td></tr>
+    </tbody>
+  </table>
+  <p>申请原因必填，凭证图片选填最多 6 张。申请列表与详情见下图。</p>
+  <figure>
+    <img src="images/pc-08-refund.png" alt="PC 我的售后">
+    <figcaption>图 16　PC 端「我的售后」：按状态筛选，展示售后单号、类型、金额与状态</figcaption>
+  </figure>
+  <div class="shot-pair">
+    <figure><img src="images/pc-09-refund-detail.png" alt="PC 售后详情">
+      <figcaption>图 17　PC 端售后详情：状态、金额、审核意见与事件时间线</figcaption></figure>
+    <figure class="h5"><img src="images/h5-07-refund.png" alt="H5 我的售后">
+      <figcaption>图 18　H5 端售后列表，与 PC 数据同源</figcaption></figure>
+  </div>
+  <div class="note"><b>常见拦截</b>订单状态为 10/20/50/60 时申请会返回「该订单当前状态不支持申请售后」；申请他人订单返回 403；已有进行中售后单需先关闭；部分退款累计金额超过订单实付会被拒绝。</div>
+
+  <h3 id="s2-10"><span class="sn">2.10</span>积分与签到</h3>
+  <p>会员每日签到得积分：<b>赠送积分 = min(连续签到天数, 7)</b>，即连签 7 天及以上每天固定 7 分；同一天重复签到会被拒绝。</p>
+  <div class="shot-pair">
+    <figure class="h5"><img src="images/h5-08-signin.png" alt="H5 每日签到">
+      <figcaption>图 19　H5 端每日签到：连续天数与当日可得积分</figcaption></figure>
+    <figure class="h5"><img src="images/h5-09-point.png" alt="H5 我的积分">
+      <figcaption>图 20　H5 端积分页：余额与流水分页</figcaption></figure>
+  </div>
+  <figure>
+    <img src="images/pc-10-point.png" alt="PC 我的积分">
+    <figcaption>图 21　PC 端我的积分：余额卡片 + 流水明细（消费返 / 签到 / 抵扣 / 退款扣回）</figcaption>
+  </figure>
+
+  <h3 id="s2-11"><span class="sn">2.11</span>收藏 / 足迹 / 评价</h3>
+  <ul>
+    <li><b>我的收藏</b>：商品详情页点「收藏」后进入收藏夹，可取消收藏。</li>
+    <li><b>我的足迹</b>：浏览过的商品按时间倒序自动记录。</li>
+    <li><b>我的评价</b>：已完成订单可对商品打分并写评价；评价内容会聚合到商品详情的均分与列表，增强能力见 <a href="#s2-20">2.20</a>。</li>
+  </ul>
+  <figure class="h5">
+    <img src="images/h5-12-favorite.png" alt="H5 我的收藏">
+    <figcaption>图 22　H5 端我的收藏</figcaption>
+  </figure>
+
+  <h3 id="s2-12"><span class="sn">2.12</span>消息中心</h3>
+  <p>系统通知统一进入站内消息：售后审核结果、退款到账、发货提醒等。消息按时间倒序，未读有红点标记。</p>
+  <div class="shot-pair">
+    <figure><img src="images/pc-11-notice.png" alt="PC 消息中心">
+      <figcaption>图 23　PC 端消息中心</figcaption></figure>
+    <figure class="h5"><img src="images/h5-11-notice.png" alt="H5 消息中心">
+      <figcaption>图 24　H5 端消息中心</figcaption></figure>
+  </div>
+
+  <h3 id="s2-13"><span class="sn">2.13</span>地址管理</h3>
+  <p>维护多个收货地址，可新增、编辑、删除与设为默认；下单时默认选中默认地址。</p>
+  <figure>
+    <img src="images/pc-12-address.png" alt="PC 地址管理">
+    <figcaption>图 25　PC 端收货地址管理</figcaption>
+  </figure>
+
+  <h3 id="s2-14"><span class="sn">2.14</span>个人中心</h3>
+  <p>「我的」页汇总全部会员能力入口：订单状态快捷入口、消息中心、每日签到、我的积分、我的收藏、收货地址、我的售后、我的足迹、我的评价、我的优惠券、领券中心、分销中心、编辑资料。V14 起支持<b>协议查看、账号注销（7 天冷静期）与个人信息导出</b>。</p>
+  <figure class="h5">
+    <img src="images/h5-05-user.png" alt="H5 我的">
+    <figcaption>图 26　H5 端个人中心：昵称、手机号、积分与全部功能入口</figcaption>
+  </figure>
+
+  <h3 id="s2-15"><span class="sn">2.15</span>店铺主页与跨店购物</h3>
+  <p>商品都有归属店铺：平台自营商品归「悦集自营旗舰店」（商家编号 <code>S00000001</code>，id=1），第三方商家的商品在商品卡、详情页与订单上都会显示店铺标，点击即可进入<b>店铺主页</b>查看店铺信息与店内全部在售商品。</p>
+  <figure>
+    <img src="images/pc-13-shop.png" alt="PC 店铺主页">
+    <figcaption>图 27　PC 端店铺主页：店铺头（编号、经营类目、在售数）+ 店内商品列表</figcaption>
+  </figure>
+  <div class="shot-pair">
+    <figure class="h5"><img src="images/h5-13-shop.png" alt="H5 店铺主页">
+      <figcaption>图 28　H5 端店铺主页：店铺头 + 双列商品流，下拉分页加载</figcaption></figure>
+    <figure class="h5"><img src="images/h5-14-confirm.png" alt="H5 跨店确认订单">
+      <figcaption>图 29　H5 端确认订单：商品按店铺分组展示</figcaption></figure>
+  </div>
+  <h4>跨店拆单规则</h4>
+  <ol class="steps">
+    <li>购物车勾选多个店铺的商品点「去结算」，确认页按店铺分组展示，并提示「已选 N 个店铺的商品」。</li>
+    <li><b>跨店订单不支持优惠券</b>：券只能作用于单店订单，确认页的券选择器会被禁用。</li>
+    <li>提交订单时系统按店铺拆成 N 笔独立订单（<b>一单一商家</b>），需分别进入收银台逐一支付。</li>
+    <li>拆单后自动跳转「我的订单」，逐笔支付；售后同样按店铺分别处理。</li>
+  </ol>
+  <figure>
+    <img src="images/pc-14-confirm.png" alt="PC 跨店确认订单">
+    <figcaption>图 30　PC 端跨店确认订单：2 个店铺分组、拆单提示、优惠券禁用（跨店铺下单不支持）</figcaption>
+  </figure>
+  <div class="note"><b>资金口径</b>每笔订单确认收货时按商家费率自动分账：<code>平台抽成 = 实付 × 费率(‰)</code>、<code>商家应收 = 实付 − 平台抽成</code>，两者相加恒等于实付金额。平台自营店铺（费率 0）不分账。</div>
+
+  <h3 id="s2-16"><span class="sn">2.16</span>限时秒杀</h3>
+  <p>秒杀专场按「进行中 / 即将开始 / 已结束」三段分组展示。进行中的场次显示<b>秒杀价与原价划线</b>、<b>距结束倒计时</b>、进度条（已抢件数）与「去抢购」按钮；即将开始的场次显示<b>开抢时间</b>与「未开始」按钮（点击可收藏提醒，开抢前不可下单）。</p>
+  <div class="shot-pair">
+    <figure><img src="images/pc-15-seckill.png" alt="PC 秒杀专场">
+      <figcaption>图 31　PC 端秒杀专场：分组、秒杀价、倒计时与抢购按钮</figcaption></figure>
+    <figure class="h5"><img src="images/h5-17-seckill.png" alt="H5 秒杀专场">
+      <figcaption>图 32　H5 端秒杀页：进行中 4 场 + 即将开始 1 场（V15 接真实数据）</figcaption></figure>
+  </div>
+  <div class="tip"><b>防超卖</b>秒杀下单走「Redis 预扣 + 数据库条件更新」双保险；每人限购数量（<code>per_limit</code>）在下单时校验，超限被拒。秒杀订单在「我的订单」中与普通单同流展示（订单类型标记为秒杀单）。</div>
+
+  <h3 id="s2-17"><span class="sn">2.17</span>拼团</h3>
+  <p>拼团专区列出进行中的团活动：团价与原价对比、成团人数、成团时限。买家开团支付后进入「我的拼团」分享参团；成团时限内人数凑齐即<b>成团</b>进入发货，超时未成团<b>自动全额退款</b>。</p>
+  <div class="shot-pair">
+    <figure><img src="images/pc-16-group.png" alt="PC 拼团专区">
+      <figcaption>图 33　PC 端拼团专区：团价、成团人数与开团入口</figcaption></figure>
+    <figure class="h5"><img src="images/h5-18-group.png" alt="H5 拼团专区">
+      <figcaption>图 34　H5 端拼团页：2 人团 / 3 人团卡片，右上角「我的拼团」入口</figcaption></figure>
+  </div>
+
+  <h3 id="s2-18"><span class="sn">2.18</span>幸运抽奖</h3>
+  <p>抽奖页展示奖池（积分、优惠券、实物）与<b>参与消耗</b>（免参与或扣积分）、每日限抽次数。抽中实物奖品后在「我的抽奖记录」中登记收货信息等待发货；抽中券自动入「我的优惠券」。</p>
+  <div class="shot-pair">
+    <figure><img src="images/pc-17-lottery.png" alt="PC 幸运抽奖">
+      <figcaption>图 35　PC 端幸运抽奖：奖池展示与抽奖按钮</figcaption></figure>
+    <figure class="h5"><img src="images/h5-19-lottery.png" alt="H5 幸运抽奖">
+      <figcaption>图 36　H5 端抽奖页：奖池（积分 / 券 / 实物）与每日限次</figcaption></figure>
+  </div>
+
+  <h3 id="s2-19"><span class="sn">2.19</span>分销中心</h3>
+  <p>会员在分销中心<b>申请成为分销员</b>（平台审核后生效），获得专属<b>邀请码 / 邀请链接</b>。通过邀请注册的下级会员下单并确认收货后，按平台配置的<b>佣金规则</b>自动记入佣金流水。分销中心展示累计佣金、已结算、可提现与我的团队，可发起<b>佣金提现</b>（平台审核打款，拒绝原路退回）。</p>
+  <div class="shot-pair">
+    <figure><img src="images/pc-18-distribution.png" alt="PC 分销中心">
+      <figcaption>图 37　PC 端分销中心：分销状态、邀请码、佣金三栏与我的团队</figcaption></figure>
+    <figure class="h5"><img src="images/h5-20-distribution.png" alt="H5 分销中心">
+      <figcaption>图 38　H5 端分销中心：邀请码、佣金汇总、团队 / 明细 / 提现入口</figcaption></figure>
+  </div>
+  <div class="note"><b>体系独立</b>分销佣金记在「会员分销体系」，与商家分账（货款体系）互相独立；佣金只从推广订单产生，确认收货时结算。</div>
+
+  <h3 id="s2-20"><span class="sn">2.20</span>评价增强（V15）</h3>
+  <ul>
+    <li><b>追评</b>：订单完成后 <b>30 天内</b>可对已有评价追加一条追评；详情页以「评价 + 追评」双条带展示，追评带「追评」标注与时间。</li>
+    <li><b>有用数</b>：其他会员可点「有用」，同一人对同一评价只计一次（幂等），再次点击取消。</li>
+    <li><b>评价标签</b>：写评价时可勾选预置标签（如「物流很快」「质量好」），商品详情页展示<b>标签云</b>与各标签计数，点标签可<b>按标签筛选</b>评价。</li>
+    <li><b>晒单图片墙</b>：商品详情聚合全部评价图片，形成晒单图片墙，点击查看大图。</li>
+  </ul>
+  <figure class="h5">
+    <img src="images/h5-21-review-my.png" alt="H5 我的评价">
+    <figcaption>图 39　H5 端我的评价：评价 + 商家回复 + 追评条带，底部「追评」入口</figcaption>
+  </figure>
+
+  <!-- ══════════════ 3 ══════════════ -->
+  <h2 id="s3"><span class="num">03</span>运营后台操作</h2>
+  <p class="lead">后台负责商品、交易、营销与商家的全生命周期管理。左侧菜单为一级手风琴分组（点击展开二级）：经营看板、商品管理、订单管理、会员管理、营销管理、商家管理、交易设置、客服与消息，共 27 个页面。</p>
+
+  <h3 id="s3-1"><span class="sn">3.1</span>登录</h3>
+  <p>使用 <code>admin / admin123</code> 登录，需额外输入图片中的算术验证码（如 <code>7-2=?</code> 填 <code>5</code>）。登录态存于浏览器本地，过期或 401 时自动踢回登录页。</p>
+  <figure>
+    <img src="images/admin-01-login.png" alt="后台登录页">
+    <figcaption>图 40　运营后台登录页：账号、密码、算术验证码</figcaption>
+  </figure>
+
+  <h3 id="s3-2"><span class="sn">3.2</span>工作台与经营看板</h3>
+  <p>经营看板是每日经营的第一屏：支持「今日 / 近 7 天 / 近 30 天」切换，聚合 8 个核心指标，并给出按成交量的 Top5 商品。</p>
+  <figure>
+    <img src="images/admin-02-dashboard.png" alt="经营看板">
+    <figcaption>图 41　经营看板：GMV、已支付订单数、客单价、退款金额、待发货、待审核售后、新增会员、售后率 + Top5 商品</figcaption>
+  </figure>
+  <table>
+    <thead><tr><th>指标</th><th>口径</th></tr></thead>
+    <tbody>
+      <tr><td>成交金额 GMV</td><td>统计区间内<b>已支付</b>订单实付合计（元）</td></tr>
+      <tr><td>已支付订单数</td><td>统计区间内支付成功的订单笔数</td></tr>
+      <tr><td>客单价</td><td>GMV ÷ 已支付订单数</td></tr>
+      <tr><td>退款金额</td><td>已退款售后单金额合计</td></tr>
+      <tr><td>待发货订单</td><td>status = 20 的订单数（全量，非区间）</td></tr>
+      <tr><td>待审核售后</td><td>status = 1 的售后单数（全量）</td></tr>
+      <tr><td>新增会员</td><td>统计区间内注册的会员数</td></tr>
+      <tr><td>售后率</td><td>已退款售后单数 ÷ 已支付订单数</td></tr>
+    </tbody>
+  </table>
+  <div class="tip"><b>解读提示</b>「待发货订单」「待审核售后」是全量待办，不随区间变化；发现这两个数字持续偏高，说明履约或售后处理积压，应优先清队列。</div>
+
+  <h3 id="s3-3"><span class="sn">3.3</span>商品管理</h3>
+  <h4>商品（SPU）</h4>
+  <p>维护商品主数据：商品名称、副标题、商品类目、品牌、主图、轮播图、详情、上下架状态与<b>所属店铺</b>。列表新增「店铺」列展示归属商家，编辑表单可切换商品归属的店铺；归属变更保存后，C 端商品卡与详情页的店铺标即时跟随。列表显示类目路径与品牌名称，操作列为「详情」，右上角可导出。</p>
+  <figure>
+    <img src="images/admin-03-goods.png" alt="后台商品列表">
+    <figcaption>图 42　商品管理：商品编码、类目、品牌、名称、副标题、主图、所属店铺</figcaption>
+  </figure>
+  <h4>商品 SKU</h4>
+  <p>SKU 是价格与库存的真正载体：同一 SPU 下可有多个规格组合，每个 SKU 独立维护价格、库存、图片与规格值。</p>
+  <figure>
+    <img src="images/admin-04-sku.png" alt="后台 SKU 列表">
+    <figcaption>图 43　商品 SKU：按商品名显示归属，独立维护价格与库存</figcaption>
+  </figure>
+  <h4>商品类目</h4>
+  <p>树形维护类目层级，支持父子关系与图标。类目会影响 C 端筛选结果（选父类包含全部子类商品）。</p>
+  <figure>
+    <img src="images/admin-05-category.png" alt="后台类目">
+    <figcaption>图 44　商品类目：树形结构维护</figcaption>
+  </figure>
+  <h4>轮播图与品牌</h4>
+  <figure>
+    <img src="images/admin-12-banner.png" alt="后台轮播图">
+    <figcaption>图 45　轮播图管理：图片、跳转目标、排序与启用状态</figcaption>
+  </figure>
+  <div class="note"><b>图片上传</b>商品主图单图上传、轮播图多图上传，文件落盘到 <code>be/mall-cloud/uploads</code>，后台运行时请勿切换到其他目录，否则历史图片会 404。</div>
+
+  <h3 id="s3-4"><span class="sn">3.4</span>订单管理</h3>
+  <p>订单列表可按订单号、会员、状态、下单时间筛选，支持导出。行内提供「详情」；处于可操作状态时额外出现「发货」与「关闭」按钮，点击后弹出操作对话框填写物流/备注。</p>
+  <figure>
+    <img src="images/admin-06-order.png" alt="后台订单列表">
+    <figcaption>图 46　订单管理：订单号、会员、商品总额、运费、优惠金额、操作</figcaption>
+  </figure>
+  <table>
+    <thead><tr><th>操作</th><th>前置状态</th><th>结果</th></tr></thead>
+    <tbody>
+      <tr><td>发货</td><td>20 待发货</td><td>→ 30 已发货，写入发货时间，C 端可确认收货</td></tr>
+      <tr><td>关闭</td><td>20 待发货</td><td>→ 60 已关闭，回补 SKU 库存与销量</td></tr>
+      <tr><td>导出</td><td>任意</td><td>按当前筛选条件导出订单台账</td></tr>
+    </tbody>
+  </table>
+  <h4>订单流转日志</h4>
+  <p>每笔订单的状态变更都留痕（下单、支付、发货、收货、关闭、售后事件），可按订单号精确检索，是排查交易问题的主要依据。</p>
+  <figure>
+    <img src="images/admin-07-order-log.png" alt="订单流转日志">
+    <figcaption>图 47　订单流转日志：事件、操作方、时间</figcaption>
+  </figure>
+
+  <h3 id="s3-5"><span class="sn">3.5</span>售后审核</h3>
+  <p>售后单由 C 端申请产生，本页做审核与退款处理。列表可按售后单号、订单号、状态、类型、申请日期筛选，右上角「导出台账」。</p>
+  <figure>
+    <img src="images/admin-08-refund.png" alt="售后退款单">
+    <figcaption>图 48　售后退款单：售后单号、订单号、会员、类型（含 V15 换货）、退款金额、状态、操作</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>状态为 <b>1 待审核</b> 的行出现「审核」按钮，点开弹窗选择「同意」或「拒绝」并填写审核意见。</li>
+    <li>同意后状态变为 <b>2 已同意</b>，该行出现「确认退款」按钮（换货单则进入收发货流程，见 5.2）。</li>
+    <li>点「确认退款」执行模拟退款：状态置 <b>4 已退款</b>；若类型为退货退款，同一事务内回补库存、回减销量。</li>
+    <li><b>V15 部分退款</b>：一单可多次审核退款，累计金额由系统校验不超过实付。</li>
+    <li><b>V15 平台介入</b>：商家超过 <b>48 小时</b>未处理的售后单自动进入<b>仲裁队列</b>（惰性扫描，不依赖定时任务）；运营在队列中裁决，可改判金额或<b>强制退款</b>，裁决全程留痕。</li>
+    <li>审核/退款/裁决结果同时推送到会员消息中心。</li>
+  </ol>
+  <div class="note"><b>幂等与并发</b>状态迁移全部使用条件 UPDATE（<code>WHERE status = 期望值</code>），受影响行数为 0 即视为并发冲突，界面会提示刷新；重复退款不会二次回补库存。</div>
+
+  <h3 id="s3-6"><span class="sn">3.6</span>优惠券</h3>
+  <p>券模板维护面额、使用门槛、发放总量、有效期与每人限领；「领券记录」为发放与核销台账，可看到会员、领取时间、使用订单号与状态。</p>
+  <figure>
+    <img src="images/admin-09-coupon.png" alt="优惠券模板">
+    <figcaption>图 49　优惠券模板管理</figcaption>
+  </figure>
+
+  <h3 id="s3-7"><span class="sn">3.7</span>会员管理</h3>
+  <p>查看会员昵称、手机号、积分、注册时间等；可编辑资料、查看会员消费与积分情况。</p>
+  <figure>
+    <img src="images/admin-10-member.png" alt="会员管理">
+    <figcaption>图 50　会员管理：账号、昵称、手机号、积分</figcaption>
+  </figure>
+
+  <h3 id="s3-8"><span class="sn">3.8</span>评价管理</h3>
+  <p>查看会员评价（星级、内容、图片、追评、标签），支持按商品 ID、评分、状态筛选；可进行<b>商家回复</b>，或<b>隐藏</b>违规评价（隐藏后 C 端评价列表不可见）。</p>
+  <figure>
+    <img src="images/admin-11-review.png" alt="评价管理">
+    <figcaption>图 51　评价管理：评分星级、评价内容、图片、商家回复</figcaption>
+  </figure>
+
+  <h3 id="s3-9"><span class="sn">3.9</span>消息与地址</h3>
+  <ul>
+    <li><b>站内消息</b>：查看推送给会员的消息台账（标题、内容、接收人、发送时间、已读状态）。</li>
+    <li><b>收货地址</b>：会员地址台账，按会员名检索，便于客服核对收货信息。</li>
+  </ul>
+  <figure>
+    <img src="images/admin-13-notice.png" alt="站内消息">
+    <figcaption>图 52　站内消息台账</figcaption>
+  </figure>
+
+  <h3 id="s3-10"><span class="sn">3.10</span>商户入驻</h3>
+  <p>第三方商家入驻的全流程管理：<b>提交申请 → 平台审核 → 启用经营 → 停用/驳回</b>。审核通过后商家才会在 C 端「品牌店铺」区块露出，才能发布归属自己的商品。</p>
+  <figure>
+    <img src="images/admin-14-merchant.png" alt="商家入驻列表">
+    <figcaption>图 53　商家入驻：商家台账（店铺、执照主体、联系人、抽成费率、可提现余额）</figcaption>
+  </figure>
+  <h4>操作说明</h4>
+  <ol class="steps">
+    <li>点「新增入驻申请」填写店铺名、执照主体、联系人、经营类目与<b>抽成费率</b>（千分比，如 <code>100</code> = 10%）。重复执照号会被拒绝（防重复入驻）。</li>
+    <li>新申请状态为 <b>0 待审核</b>；点「详情」查看台账与操作时间线，在详情中执行「审核」。</li>
+    <li>审核通过（→ <b>1 启用中</b>）后，店铺进入 C 端店铺列表；驳回（→ <b>3 已驳回</b>）需填写原因。</li>
+    <li>「停用」（→ <b>2 已停用</b>）后 C 端立即不可见、不可发品；历史订单与结算不受影响。</li>
+  </ol>
+  <table>
+    <thead><tr><th>状态</th><th>含义</th><th>C 端可见</th><th>可发品</th></tr></thead>
+    <tbody>
+      <tr><td>0 待审核</td><td>申请已提交</td><td>否</td><td>否</td></tr>
+      <tr><td>1 启用中</td><td>审核通过，正常经营</td><td>是</td><td>是</td></tr>
+      <tr><td>2 已停用</td><td>平台手动停用</td><td>否</td><td>否</td></tr>
+      <tr><td>3 已驳回</td><td>审核未通过（附原因）</td><td>否</td><td>否</td></tr>
+    </tbody>
+  </table>
+  <div class="note"><b>平台自营</b>id=1 的「悦集自营旗舰店」为系统内置店铺，费率 0、不可删除，历史无归属商品与订单自动归入该店（展示为「平台自营」）。</div>
+
+  <h3 id="s3-11"><span class="sn">3.11</span>商家结算</h3>
+  <p>订单确认收货时按商家费率自动分账并记入商家余额；本页负责把已出账的明细<b>按期间汇总成结算单</b>并核对明细。</p>
+  <figure>
+    <img src="images/admin-15-settlement.png" alt="商家结算">
+    <figcaption>图 54　商家结算：结算单（商家、期间、订单数、商家应收、平台抽成、退款冲减）</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>点「生成结算单」，选择商家与结算期间（起止日期），系统汇总该期间内已确认收货订单的货款与抽成。</li>
+    <li>同一订单只会入账一次（<code>订单 + 商家</code> 唯一约束），重复生成不会二次入账；期间内有退款的订单会记入「退款冲减」。</li>
+    <li>点「明细」下钻查看每笔订单的实付、费率、商家应收、平台抽成与退款冲减，核对无误后作为对账依据。</li>
+  </ol>
+  <div class="tip"><b>资金恒等式</b><code>实付金额 = 商家应收 + 平台抽成</code>（退款单另行冲减）。列表头实时展示该公式，方便对账。</div>
+
+  <h3 id="s3-12"><span class="sn">3.12</span>商家提现</h3>
+  <p>商家从可提现余额发起提现，平台审核后打款；拒绝则金额原路退回余额。审核中的金额会被占用，不能重复提现。</p>
+  <figure>
+    <img src="images/admin-16-withdrawal.png" alt="商家提现">
+    <figcaption>图 55　商家提现：提现单（金额、方式、状态、审核人、拒绝原因）</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>点「发起提现」，选择商家、输入金额（元）与提现方式（余额 / 微信 / 银行卡）；金额不能超过该商家当前可提现余额，超额会被拒绝。</li>
+    <li>提交后状态为 <b>审核中</b>，对应金额立即从可提现余额中占用。</li>
+    <li>审核「通过」= 打款（→ <b>已打款</b>，终态）；「拒绝」填写原因（→ <b>已退回</b>），金额退回余额可再次提现。</li>
+  </ol>
+  <div class="note"><b>幂等与并发</b>提现审核使用条件更新，重复点击不会二次打款；余额加减全部走数据库原子更新（<code>balance = balance ± n</code> 与 <code>balance ≥ 金额</code> 条件扣减），并发申请不会把余额扣成负数。</div>
+
+  <h3 id="s3-13"><span class="sn">3.13</span>运费模板</h3>
+  <p>运费从「恒 0」变为真实计费。一个模板 = 计费方式 + 多条地区规则，解析顺序：<b>商品级绑定 → 店铺级绑定 → 全局默认模板</b>；跨店下单时各订单各承担本店运费。</p>
+  <figure>
+    <img src="images/admin-17-freight.png" alt="运费模板">
+    <figcaption>图 56　运费模板：模板列表（按件 / 按重量 / 满额包邮）与地区规则维护</figcaption>
+  </figure>
+  <h4>操作说明</h4>
+  <ol class="steps">
+    <li>点「新增模板」选择计费方式：<b>按件</b>（首 N 件首费 + 续件费）、<b>按重量</b>（克，口径相同）、<b>满额包邮</b>（未达门槛收固定首费）。金额单位为元，保存时自动转分。</li>
+    <li>在模板内维护<b>地区规则</b>：按省份精确匹配，优先于「全国默认」规则（regionCodes 为空的行）。</li>
+    <li>勾选「设为默认」把模板设为全局兜底（同库唯一）；被商品或店铺引用的模板不可删除，需先解除引用。</li>
+    <li>商品编辑页可为单个商品绑定模板（<code>mall_goods.freight_template_id</code>），店铺在商家资料上绑定店铺级模板。</li>
+  </ol>
+  <div class="tip"><b>计费公式</b><code>units ≤ 首件 → 首费；否则 首费 + ⌈(units−首件)/续件⌉ × 续费</code>；订单金额 ≥ 包邮门槛时运费为 0。C 端确认订单页实时展示运费与「还差 X 元包邮」提示，实付 = 商品总额 + 运费 − 优惠（券不抵运费）。</div>
+
+  <h3 id="s3-14"><span class="sn">3.14</span>发货工作台</h3>
+  <p>发货从「订单上手填单号」升级为独立发货单台账，支持<b>一单多包裹（部分发货）</b>与<b>批量导入</b>；全部发完订单才转「已发货」。</p>
+  <figure>
+    <img src="images/admin-18-delivery.png" alt="发货工作台">
+    <figcaption>图 57　发货单：台账 + 发货弹窗（按订单号取待发明细，逐行填写本次数量）</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>点「发货」输入订单号，系统带出<b>待发明细</b>（数量、已发、剩余）；本次数量留空 = 发剩余全部。</li>
+    <li>快递单号全局唯一，重复会被拒绝（防止两单贴同一面单）。</li>
+    <li>「批量导入」粘贴多行 <code>订单号,快递公司,快递单号</code>，逐行校验并返回成功数与错误报告（错在哪一行、什么原因）。</li>
+    <li>每发一包生成一条发货单与物流轨迹；<b>部分发货不改变订单状态</b>（仍待发货），最后一包发完才转 30 已发货。</li>
+  </ol>
+  <div class="note"><b>C 端联动</b>订单详情按包裹展示物流轨迹（揽收 → 运输 → 派送 → 签收，演示渠道自动生成）；收货人信息随每个包裹快照留档。</div>
+
+  <h3 id="s3-15"><span class="sn">3.15</span>发票管理</h3>
+  <p>一单只能开一张发票，金额恒等于订单实付（前端传了也不采纳）；订单必须「已完成」才能申请。</p>
+  <figure>
+    <img src="images/admin-19-invoice.png" alt="发票管理">
+    <figcaption>图 58　发票管理：开票队列（申请单号、抬头、税号、金额、状态）与红冲操作</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>C 端在订单详情点「申请开票」：个人抬头填姓名，企业抬头必须填 15–20 位纳税人识别号；重复申请被拦截。</li>
+    <li>本页队列中点「开票」，粘贴电子发票文件地址后置为<b>已开票</b>；C 端即可查看 / 下载发票文件。</li>
+    <li>开错票点「红冲」填写原因（→ <b>已红冲</b>，原票失效）；售后<b>全额退款会自动红冲</b>发票，无需人工干预。</li>
+  </ol>
+  <div class="tip"><b>退款联动</b>退款服务确认退款后经内部接口通知订单域自动红冲该订单发票；红冲失败只告警不阻断退款。</div>
+
+  <h3 id="s3-16"><span class="sn">3.16</span>支付流水与对账</h3>
+  <p>支付渠道化：<code>POST /shop/pay/prepay</code> 落支付单 → 渠道回调 <code>/shop/pay/notify/{channel}</code> 验签推进订单。沙箱渠道与真实渠道同构（签名 <code>md5(payNo+交易号+金额+状态+密钥)</code>），微信 / 支付宝未配置商户资质时直接 503，<b>绝不伪造支付成功</b>。</p>
+  <figure>
+    <img src="images/admin-20-payment.png" alt="支付流水">
+    <figcaption>图 59　支付流水：支付单（支付单号、订单号、渠道、金额、状态、渠道交易号）</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>C 端收银台按「渠道可用性」渲染支付方式：沙箱恒可用；微信 / 支付宝配置商户参数后自动亮起。</li>
+    <li>回调<b>幂等</b>：同一回调重放只推进一次订单，重复回调按重放应答；金额不一致或验签失败一律 400，已关单订单收到迟到回调会<b>自动原路退款</b>而不复活订单。</li>
+    <li>「执行对账」按日把渠道账单与本地成功支付单逐笔比对：多账 / 少账 / 本地多 / 渠道多四类差异进台账，「确认 / 忽略」处置。沙箱下未传账单时按本地镜像对账（差异恒 0），作日常巡检。</li>
+  </ol>
+  <figure>
+    <img src="images/admin-21-reconcile.png" alt="支付对账">
+    <figcaption>图 60　支付对账：差异台账（账单日、渠道、类型、渠道金额、本地金额、处置状态）</figcaption>
+  </figure>
+  <div class="note"><b>接真实渠道</b>在 <code>application.yml</code> 配置 <code>mall.pay.wxpay.*</code> / <code>mall.pay.alipay.*</code> 商户参数并把账单下载定时任务接入对账即可，代码路径无需改动。</div>
+
+  <h3 id="s3-17"><span class="sn">3.17</span>促销活动</h3>
+  <p>促销引擎（V13 引入计算内核、V14 提供后台与 C 端试算）支持六类玩法：<b>满减、满折、限时折扣、第二件半价、套装、加价购</b>。每个活动配置生效范围（全场 / 类目 / 商品）、规则参数、起止时间、<b>优先级</b>与<b>是否可叠加</b>；未配置叠加时系统默认取「对买家最优」的单个活动。</p>
+  <figure>
+    <img src="images/admin-22-promotion.png" alt="促销活动">
+    <figcaption>图 61　促销活动：「全场满100减20」满减活动（规则、时间窗、优先级、进行中）</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>点「新建活动」选择类型并填写规则（金额单位元，自动转分）：满减填门槛与减额；满折/限时折扣填折扣率（90 = 9 折）；第二件半价填折扣率；加价购填门槛与换购价。</li>
+    <li>设置优先级（数字小者优先）与「可叠加」；多条可叠加活动按「比例类先算、定额类后算」的固定顺序生效。</li>
+    <li>保存后在列表「停用 / 启用」即时生效；C 端商品卡与确认订单页同步展示角标、活动价与试算明细（见 2.3 / 2.6）。</li>
+  </ol>
+  <div class="tip"><b>引擎口径</b>满减门槛按活动范围内商品<b>原价</b>小计判定（先打折再满减不蚕食门槛）；任何一步减免不超过当前余额，应付永不为负；活动优惠按「最大余数法」分摊到行，分摊合计恒等于优惠总额。试算、下单、后台预览共用同一段纯函数内核，同参数结果一致。</div>
+
+  <h3 id="s3-18"><span class="sn">3.18</span>会员等级</h3>
+  <p>会员等级按<b>成长值</b>自动升降级：成长值达到门槛即升级，享受对应折扣与权益。C 端下单试算时，会员折扣在促销活动之后叠加；等级还附带<b>每月包邮次数</b>，下单时自动抵扣运费。</p>
+  <figure>
+    <img src="images/admin-23-member-level.png" alt="会员等级">
+    <figcaption>图 62　会员等级：普通 / 银卡 / 金卡 / 黑卡四档（成长值门槛、折扣率、包邮次数、权益清单）</figcaption>
+  </figure>
+  <table>
+    <thead><tr><th>等级</th><th>成长值门槛</th><th>折扣</th><th>每月包邮</th><th>权益示例</th></tr></thead>
+    <tbody>
+      <tr><td>普通会员</td><td>0</td><td>无</td><td>—</td><td>社区评论、积分兑换</td></tr>
+      <tr><td>银卡会员</td><td>500</td><td>9.8 折</td><td>1 次</td><td>专属客服</td></tr>
+      <tr><td>金卡会员</td><td>2000</td><td>9.5 折</td><td>3 次</td><td>生日礼包、专属客服</td></tr>
+      <tr><td>黑卡会员</td><td>5000</td><td>9 折</td><td>6 次</td><td>优先发货、专属客服</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="s3-19"><span class="sn">3.19</span>秒杀 / 拼团 / 抽奖活动管理</h3>
+  <p>三类营销活动在此统一维护（与 C 端 2.16–2.18 对应）。</p>
+  <h4>秒杀活动</h4>
+  <p>选择商品与 SKU，配置秒杀价、场次库存、限购数与起止时间；列表实时显示「已抢 / 剩余库存」。删除已产生秒杀单的活动不影响历史订单。</p>
+  <figure>
+    <img src="images/admin-24-seckill.png" alt="秒杀活动">
+    <figcaption>图 63　秒杀活动管理：秒杀价、库存、限购与场次时间</figcaption>
+  </figure>
+  <h4>拼团活动</h4>
+  <p>配置团价、成团人数与成团时限（小时）。成团 / 超时退款自动执行，参团记录可在团详情中追溯。</p>
+  <figure>
+    <img src="images/admin-25-group.png" alt="拼团活动">
+    <figcaption>图 64　拼团活动管理：团价、成团人数、成团时限</figcaption>
+  </figure>
+  <h4>抽奖活动</h4>
+  <p>配置活动名称、参与消耗（免参与 / 扣积分）与每日限抽次数；在活动内维护<b>奖品池</b>（积分、优惠券、实物、谢谢参与），实物奖品设置库存（-1 为不限）。</p>
+  <figure>
+    <img src="images/admin-26-lottery.png" alt="抽奖活动">
+    <figcaption>图 65　抽奖活动管理：活动配置与奖品池（10 积分 / 满199减20券 / 实物 / 谢谢参与）</figcaption>
+  </figure>
+
+  <h3 id="s3-20"><span class="sn">3.20</span>分销管理</h3>
+  <p>本页维护分销员台账（审核申请、查看团队与业绩）、<b>佣金规则</b>（按类目/商品配置佣金比例）、佣金流水与佣金提现审核；C 端分销员发起的提现在此打款或驳回。</p>
+  <figure>
+    <img src="images/admin-27-distribution.png" alt="分销管理">
+    <figcaption>图 66　分销管理：分销员台账（邀请码、团队、累计佣金）与佣金规则入口</figcaption>
+  </figure>
+
+  <h3 id="s3-21"><span class="sn">3.21</span>客服工单</h3>
+  <p>会员在 C 端提交的咨询 / 催促 / 投诉统一进入工单台账。按工单号、标题、订单号检索，按分类（商品咨询 / 订单售后 / 物流 / 支付 / 其他）与状态过滤。</p>
+  <figure>
+    <img src="images/admin-28-ticket.png" alt="客服工单">
+    <figcaption>图 67　客服工单：工单号、标题、分类、关联订单、状态（待处理 / 处理中 / 已解决）</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>点「处理」进入工单详情，可查看会员问题全文并<b>回复</b>；首次回复后状态转「已回复」，工单侧同时记录首响时间。</li>
+    <li>问题解决后点「关闭」结单（→ <b>已解决</b>）。</li>
+    <li>超过 <b>24 小时</b>未首次回复的工单在进入列表页时自动标记「<b>待处理超时</b>」（惰性置位，不依赖定时任务），顶部统计徽标实时显示超时数，应优先清超时队列。</li>
+  </ol>
+
+  <h3 id="s3-22"><span class="sn">3.22</span>消息触达</h3>
+  <p>业务事件（支付成功、发货、退款到账、售后审核等）经消息服务统一触达会员：<b>站内信</b>落库到 C 端消息中心；<b>短信</b>走 SPI 通道，未配置短信签名 / 模板时自动<b>降级为仅站内信</b>并发失败流水，绝不阻断主业务。</p>
+  <figure>
+    <img src="images/admin-29-message.png" alt="消息触达">
+    <figcaption>图 68　消息触达：触达记录（事件、渠道、接收人、发送状态）与失败重试</figcaption>
+  </figure>
+
+  <!-- ══════════════ 4 ══════════════ -->
+  <h2 id="s4"><span class="num">04</span>商家中心（V14）</h2>
+  <p class="lead">商家中心是商家（V10 入驻的第三方商家与自营店）的独立工作台：与运营后台同域名不同路径，<b>独立登录、独立会话、数据强制隔离</b>——商家只能看到和操作自己店铺的商品、订单、售后与资金。</p>
+
+  <h3 id="s4-1"><span class="sn">4.1</span>入口与登录</h3>
+  <p>访问 <code>http://localhost:9431/#/merchant/login</code>，用入驻时创建的商家账号登录（演示账号 <code>merchant / 123456</code>）。商家令牌以 <code>Merchant-Token</code> 头单独传递，<b>与平台后台、C 端会员的会话互不顶替</b>；为了防串号，登录商家中心会主动清除同一浏览器的平台后台登录态。</p>
+  <figure>
+    <img src="images/merchant-01-login.png" alt="商家中心登录页">
+    <figcaption>图 69　商家中心登录页：独立于平台后台的账号体系</figcaption>
+  </figure>
+
+  <h3 id="s4-2"><span class="sn">4.2</span>经营概览</h3>
+  <p>登录后第一屏：在售商品数、今日订单、本月成交、待发货四张统计卡 + 待办事项（待发货 / 待审核售后 / 待了解结果单，带数量角标）+ 资金概况（可用余额、累计已结算、平台结算比例）。</p>
+  <figure>
+    <img src="images/merchant-02-overview.png" alt="商家经营概览">
+    <figcaption>图 70　商家经营概览：统计卡 + 待办 + 资金概况</figcaption>
+  </figure>
+
+  <h3 id="s4-3"><span class="sn">4.3</span>商品管理</h3>
+  <p>商家<b>自助发品</b>：新建商品默认归属本店铺（归属不可改，杜绝挂到别家店），维护名称、类目、品牌、主图、SKU 价格与库存后提交；上下架即时生效。列表只展示本店商品。</p>
+  <figure>
+    <img src="images/merchant-03-goods.png" alt="商家商品管理">
+    <figcaption>图 71　商家商品管理：本店商品列表与发布商品入口</figcaption>
+  </figure>
+
+  <h3 id="s4-4"><span class="sn">4.4</span>订单与发货</h3>
+  <p>只展示<b>本店订单</b>（含跨店拆单后归入本店的子单）。商家对待发货订单执行发货（对接 3.14 的发货单体系：支持部分发货、快递单号唯一校验），已发货订单可查看物流轨迹。</p>
+  <figure>
+    <img src="images/merchant-04-order.png" alt="商家订单与发货">
+    <figcaption>图 72　商家订单与发货：本店订单列表 + 发货操作</figcaption>
+  </figure>
+
+  <h3 id="s4-5"><span class="sn">4.5</span>售后审核</h3>
+  <p>本店订单的售后单由商家<b>优先处理</b>：审核同意 / 拒绝、换货单确认收货并寄出换货商品。商家 <b>48 小时</b>未处理的售后单会被平台仲裁队列接管（见 3.5），商家侧即时失去处理入口。</p>
+  <figure>
+    <img src="images/merchant-05-refund.png" alt="商家售后审核">
+    <figcaption>图 73　商家售后审核：本店售后单（待审核 / 处理中 / 已退款）</figcaption>
+  </figure>
+
+  <h3 id="s4-6"><span class="sn">4.6</span>结算与提现</h3>
+  <p>商家自助对账与资金操作：查看本店<b>结算单</b>与订单级明细、<b>导出对账单 CSV</b>（逐行订单号、实付、费率、应收、抽成、冲减，平台财务可直接导入核对）、发起<b>提现</b>（金额即时冻结，平台审核打款，驳回原路退回余额）。</p>
+  <figure>
+    <img src="images/merchant-06-fund.png" alt="商家结算与提现">
+    <figcaption>图 74　商家结算与提现：结算单列表 + 导出对账单 + 申请提现</figcaption>
+  </figure>
+  <div class="note"><b>数据隔离</b>商家端所有查询经 <code>@MerchantScoped</code> 切面自动追加 <code>merchant_id = 本店</code> 条件；直接构造越权请求（如改 URL 中的 id）会得到 403 并写入越权留痕表。</div>
+
+  <!-- ══════════════ 5 ══════════════ -->
+  <h2 id="s5"><span class="num">05</span>状态机与业务规则</h2>
+
+  <h3><span class="sn">5.1</span>订单状态机</h3>
+  <table>
+    <thead><tr><th>码值</th><th>状态</th><th>进入条件</th><th>可流转到</th></tr></thead>
+    <tbody>
+      <tr><td>10</td><td>待付款</td><td>提交订单</td><td>20 支付成功 / 50 用户取消 / 60 超时关单</td></tr>
+      <tr><td>20</td><td>待发货</td><td>支付成功</td><td>30 发货完成 / 60 关闭</td></tr>
+      <tr><td>30</td><td>已发货</td><td>全部包裹发完</td><td>40 确认收货</td></tr>
+      <tr><td>40</td><td>已完成</td><td>确认收货</td><td>—（售后独立进行，不回退订单状态）</td></tr>
+      <tr><td>50</td><td>已取消</td><td>用户主动取消（仅待付款）</td><td>—</td></tr>
+      <tr><td>60</td><td>已关闭</td><td>超时 30 分钟未支付 / 关闭</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sn">5.2</span>售后状态机（V15 扩展）</h3>
+  <p>基础流转：<code>1 待审核 → 2 已同意 → 4 已退款</code>、<code>1 → 3 已拒绝</code>、<code>1/2 → 5 已关闭（用户撤销）</code>。库存回补只发生在 <code>2 → 4</code> 且类型为退货退款时。</p>
+  <h4>换货流程（type=3）</h4>
+  <p><code>1 待审核 → 2 已同意 → 用户寄回 → 商家确认收货 → 商家寄出换货 → 完成</code>。换货不退款；<b>换入 / 换出 SKU 的库存净变化在换货收货确认时一次结清</b>，任何一步取消则不动库存。</p>
+  <h4>部分退款</h4>
+  <p>按订单项申请，同一订单允许多次部分退款，系统校验<b>累计退款 ≤ 订单实付</b>，超限返回业务错误。全额退清时与整单退款同效（发票自动红冲、库存按退货类型处理）。</p>
+  <h4>平台介入（仲裁）</h4>
+  <p>商家 48 小时未处理的售后单由<b>惰性扫描</b>置入仲裁队列（进后台列表页时置位，不依赖定时任务）；运营裁决可维持原判、调整金额或<b>强制退款</b>，裁决结果写时间线并推送双方。</p>
+
+  <h3><span class="sn">5.3</span>商户与提现状态机</h3>
+  <p><b>商户</b>：<code>0 待审核 → 1 启用中</code>（审核通过）、<code>0 → 3 已驳回</code>（附原因）、<code>1 ⇄ 2 已停用</code>（启停开关）。每次流转写入 <code>mall_merchant_audit_log</code> 操作时间线。</p>
+  <p><b>商家提现</b>：<code>0 审核中 → 1 已打款</code>（审核通过，终态）、<code>0 → 2 已退回</code>（审核拒绝，金额退回余额）。审核中金额占用可提现余额；拒绝对应「退回」，已打款不可逆。<b>分销员佣金提现</b>同构。</p>
+
+  <h3><span class="sn">5.4</span>工单状态机（V14）</h3>
+  <p><code>1 待处理 →（客服回复）2 已回复 →（结单）3 已解决</code>；超过 24 小时未首响的待处理单附加「超时」标记（不改变状态，只做看板提示）。</p>
+
+  <h3><span class="sn">5.5</span>促销引擎口径（V13）</h3>
+  <ul>
+    <li>六类玩法：满减 / 满折 / 限时折扣 / 第二件半价 / 套装 / 加价购；规则参数统一存 <code>rule_json</code>。</li>
+    <li>叠加策略 <code>best</code>（默认，取对买家最优的单活动）与 <code>stack</code>（可叠加集合按「比例类先算、定额类后算、同型按优先级 + ID」固定顺序）。</li>
+    <li>满减门槛按<b>原价小计</b>判定；每步减免 clamp 到当前余额，应付永不为负。</li>
+    <li>优惠按「最大余数法」分摊到订单行，Σ行优惠 == 活动优惠总额。</li>
+    <li>计算内核是<b>纯函数</b>（不查库、不读时钟），C 端试算 / 确认页 / 下单 / 后台预览共用，同参数结果一致。</li>
+    <li>促销之后才轮到券、积分、运费、会员折扣（等级折扣与包邮次数在下单链路叠加）。</li>
+  </ul>
+
+  <h3><span class="sn">5.6</span>关键口径速查</h3>
+  <table>
+    <thead><tr><th>项目</th><th>口径</th></tr></thead>
+    <tbody>
+      <tr><td>价格单位</td><td>数据库以「分」存储，前端统一 ÷100 显示「元」</td></tr>
+      <tr><td>ID 单位</td><td>对外全字符串（雪花 ID 超出 JS 安全整数）</td></tr>
+      <tr><td>分页契约</td><td>统一 <code>records / total</code> 字段</td></tr>
+      <tr><td>上架状态</td><td><code>status = 1</code> 为上架，0 为下架</td></tr>
+      <tr><td>库存扣减</td><td>提交订单扣、取消/关闭/退货退款回补；销量用 <code>GREATEST(x+?, 0)</code> 保证可回退</td></tr>
+      <tr><td>秒杀防超卖</td><td>Redis 预扣 + 数据库条件更新双保险；限购在下单校验</td></tr>
+      <tr><td>优惠券流转</td><td>领取 → 下单锁定 → 支付核销 / 取消释放；<b>跨店订单不可用券</b></td></tr>
+      <tr><td>跨店拆单</td><td>购物车按店铺分组，一单一商家；一笔支付只对应一单，拆单后逐笔支付</td></tr>
+      <tr><td>商家分账</td><td>确认收货时 <code>平台抽成 = 实付 × 费率(‰)</code>（HALF_UP 到分）、<code>商家应收 = 实付 − 抽成</code>；自营店铺费率 0</td></tr>
+      <tr><td>结算幂等</td><td><code>订单 + 商家</code> 唯一约束 + 先查后插 + 冲突兜底，重复生成结算单不会二次入账</td></tr>
+      <tr><td>促销顺序</td><td>促销活动 → 优惠券 → 积分 → 运费 → 会员折扣/包邮次数</td></tr>
+      <tr><td>会员等级</td><td>成长值达门槛自动升级；等级折扣在促销后叠加，包邮次数按月抵扣</td></tr>
+      <tr><td>积分规则</td><td>签到 = min(连续天数, 7)；消费返、下单抵扣、退款扣回四类流水</td></tr>
+      <tr><td>评价幂等</td><td>「有用」同人一评只计一次（唯一键），再点取消；追评窗口 30 天</td></tr>
+      <tr><td>售后仲裁</td><td>商家 48h 未处理入仲裁队列（惰性扫描）；裁决可强制退款</td></tr>
+      <tr><td>工单首响</td><td>24h 未首响标「待处理超时」；首次回复落 <code>first_reply_time</code></td></tr>
+      <tr><td>超时关单</td><td>待付款 30 分钟，可由 <code>mall.scheduler.order-close.timeout-minutes</code> 调整</td></tr>
+      <tr><td>账号注销</td><td>提交后 7 天冷静期，到期脱敏；期间可登录撤销</td></tr>
+      <tr><td>身份隔离</td><td>会员令牌仅 <code>/shop/**</code>；后台令牌仅后台接口；商家 <code>Merchant-Token</code> 仅 <code>/merchant-admin/**</code> 且按店铺隔离</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════ 6 ══════════════ -->
+  <h2 id="s6"><span class="num">06</span>常见问题</h2>
+
+  <h4>Q1　后台登录提示验证码错误？</h4>
+  <p>验证码为图片算式，需填<b>计算结果</b>（如 <code>7-2=?</code> 填 <code>5</code>）。验证码一次性使用，刷新页面需重新获取。</p>
+
+  <h4>Q2　H5 页面打不开或白屏？</h4>
+  <p>Vite 仅监听 <code>::1</code>，请用 <code>http://localhost:9531</code>；另外确认网关 8080 已启动、<code>vite.config.js</code> 代理 <code>/api</code> 指向 8080。</p>
+
+  <h4>Q3　点「申请售后」提示不支持？</h4>
+  <p>检查订单状态是否为 30/40；待付款(10)、待发货(20)、已取消(50)、已关闭(60) 均不支持。同时确认该订单没有进行中的售后单（状态 1 或 2）。</p>
+
+  <h4>Q4　退款后库存没变？</h4>
+  <p>只有<b>退货退款</b>类型在置为「已退款」时回补库存；「仅退款」表示货不退回，因此不回补，这是设计口径。换货的库存净变化在换货收货确认时一次结清。</p>
+
+  <h4>Q5　订单一直停在待付款？</h4>
+  <p>30 分钟后自动关单（状态 60），库存与优惠券自动恢复。若需要立即关闭，可在后台订单页对「待发货」订单执行「关闭」。</p>
+
+  <h4>Q6　页面图片全是占位图？</h4>
+  <p>依次检查：后端 <code>upload</code> 目录是否有文件 → 三端代理是否包含 <code>/uploads</code>、<code>/img</code> → 网关白名单是否放行 <code>/uploads/**</code>。</p>
+
+  <h4>Q7　后台某页面空白或 404？</h4>
+  <p>后台是 hash 路由，正确地址形如 <code>http://localhost:9431/#/mall/product/mall_goods/list</code>；按表名猜路由会 404。菜单按业务分组：dashboard / product / order / member / marketing / merchant / trade / service。</p>
+
+  <h4>Q8　跨店下单为什么不能用优惠券？</h4>
+  <p>券作用于单笔订单，而跨店购物会按店铺拆成多笔订单，无法把一张券公平地分摊到多个商家，因此<b>跨店订单统一禁用优惠券</b>。只勾选同一店铺的商品结算即可正常用券。促销活动（满减等）由引擎按行分摊，跨店不受此限。</p>
+
+  <h4>Q9　商家可提现余额为什么比「商家应收」合计少？</h4>
+  <p>可提现余额 = 累计入账 − 退款冲减 − 提现占用。审核中的提现单会临时占用余额（拒绝后自动退回），结算单只统计已确认收货订单，期间内有退款会记入「退款冲减」列。</p>
+
+  <h4>Q10　停用的店铺商品还在订单里，售后找谁？</h4>
+  <p>停用只影响 C 端可见性与新发品，<b>历史订单的履约与售后不受影响</b>；涉及该店的分账仍按原费率正常执行，售后处理转入平台（仲裁队列兜底）。</p>
+
+  <h4>Q11　为什么确认订单页有「促销优惠合计」，而我的订单没有？</h4>
+  <p>促销减免按活动规则在下单时生效并分摊到订单行，不单独退现；若订单未命中任何活动（不在范围、未到门槛、活动已停用）则无此行。核对口径见 5.5：门槛按原价小计判定。</p>
+
+  <h4>Q12　评价点了很多次「有用」为什么只 +1？</h4>
+  <p>「有用」按 <code>评价 + 会员</code> 唯一键幂等，同一人对同一评价只计一次；再次点击是取消。追评需在订单完成后 30 天内发起，超期入口自动隐藏。</p>
+
+  <h4>Q13　部分退款提示金额超限？</h4>
+  <p>同一订单所有退款单（含历史已退）累计不能超过订单实付金额。可先查看订单详情中的退款记录，确认剩余可退空间后再申请。</p>
+
+  <h4>Q14　商家后台登录后，平台后台为什么掉线了？</h4>
+  <p>两套会话虽互不顶替（token 分别存 <code>token</code> 与 <code>merchantToken</code>），但为防串号，登录商家中心会主动清除平台后台登录态，属预期行为；处理完商家事务重新登录平台后台即可。</p>
+
+  <h4>Q15　商家为什么看不到别的店铺的订单？</h4>
+  <p>这是 <code>@MerchantScoped</code> 数据隔离切面在起作用：所有商家端查询强制限定本店数据；构造越权请求返回 403 并留痕。商家只能处理本店订单与售后。</p>
+
+  <h4>Q16　工单一直显示「待处理超时」？</h4>
+  <p>该标记表示工单提交后超过 24 小时未获得首次回复。回复一次即记录首响时间、标记自动消除；建议按后台徽标数量优先清理超时工单。</p>
+
+  <!-- ══════════════ 7 ══════════════ -->
+  <h2 id="s7"><span class="num">07</span>附录</h2>
+
+  <h3><span class="sn">7.1</span>接口前缀与鉴权</h3>
+  <table>
+    <thead><tr><th>前缀</th><th>使用方</th><th>鉴权</th></tr></thead>
+    <tbody>
+      <tr><td><code>/shop/**</code></td><td>C 端 H5 / PC</td><td>逐条白名单（注册、登录、banners、categories、goods 浏览、店铺主页、领券、秒杀/拼团/抽奖列表、<code>/shop/search/**</code>），其余需会员令牌</td></tr>
+      <tr><td><code>/merchant/**</code></td><td>C 端店铺主页</td><td>店铺列表 / 详情为白名单，店内商品需登录</td></tr>
+      <tr><td><code>/merchant-admin/**</code></td><td>商家中心</td><td><code>Merchant-Token</code> 头 + <code>@MerchantScoped</code> 店铺隔离（登录 / 验证码白名单）</td></tr>
+      <tr><td><code>/api/mall/mall_*</code></td><td>后台</td><td>登录 + 权限点（如 <code>mall_mall_merchant:audit</code>）</td></tr>
+      <tr><td><code>/auth/**</code>、<code>/system/**</code></td><td>后台基座</td><td>登录（登录/验证码白名单）</td></tr>
+      <tr><td><code>/inner/**</code></td><td>服务间 Feign</td><td>网关不暴露，返回裸对象</td></tr>
+      <tr><td><code>/uploads/**</code>、<code>/img/**</code></td><td>多端 img 标签</td><td>白名单直链</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sn">7.2</span>目录速查</h3>
+  <table>
+    <thead><tr><th>路径</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td><code>be/mall-cloud/</code></td><td>后端十四模块 reactor（网关 + 9 服务 + 公共库 + 配置 + 测试支撑）</td></tr>
+      <tr><td><code>be/mall-cloud/uploads/</code></td><td>上传文件与缩略图缓存</td></tr>
+      <tr><td><code>fe/mall-web</code> / <code>mall-pc</code> / <code>mall-shop</code></td><td>后台（含商家中心）/ PC / H5 三端前端</td></tr>
+      <tr><td><code>db/</code></td><td>建库与种子数据脚本（v3-shop、v4-refund、v8-promo、v9-distribution、v10-merchant、v12-trade、v13-promotion-engine、v14-support-message、v15-review、v15-aftersale、init_sys_* 等）</td></tr>
+      <tr><td><code>docs/规划/</code></td><td>各版本规划文档（V8 / V9 / V10 / V11–V14 能力补齐需求等）</td></tr>
+      <tr><td><code>docs/系统功能手册/</code></td><td>本手册与截图（<code>scripts/capture-manual-shots.mjs</code> 可重拍全部截图）</td></tr>
+      <tr><td><code>mall-cloud-fe-smoke.mjs</code></td><td>接口冒烟（覆盖下单 / 运费 / 支付回调幂等 / 部分发货 / 发票 / 对账 / 售后 / 促销 / 分销 / 商户全链路）</td></tr>
+      <tr><td><code>mall-cloud-ui-check.mjs</code>、<code>v15-ui-check.mjs</code></td><td>浏览器走查（三端 40+ 页面零 console error）</td></tr>
+      <tr><td><code>v15-e2e-seckill.mjs</code>、<code>v15-e2e-distribution.mjs</code></td><td>端到端脚本（秒杀 30 断言 / 分销 19 断言）</td></tr>
+      <tr><td><code>scripts/capture-manual-shots.mjs</code></td><td>手册截图批量采集（CDP 无头浏览器，登录态自动注入）</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sn">7.3</span>版本与后续</h3>
+  <p>当前版本 <b>V15（评价增强 + 售后扩展 + 促销 C 端展示）</b>。版本历程：V8 促销玩法（秒杀/拼团/抽奖）→ V9 分销裂变 → V10 商户入驻、跨店拆单、分账结算与提现 → V12 支付渠道化、运费模板、发货单与部分发货、物流轨迹、发票与红冲、支付对账 → V13/V14 合并交付（促销引擎纯函数内核、商家中心与三方令牌隔离、合规注销与信息导出、会员等级权益、购物车营销、搜索增强、客服工单、消息触达）→ V15 评价增强（追评 / 有用数幂等 / 标签云 / 晒单墙）、售后扩展（换货 / 部分退款 / 平台仲裁）、促销 C 端展示（角标 / 活动价 / 倒计时 / 试算明细）。</p>
+  <p>待办（P2 远期）：微信小程序、内容社区、储值卡、预售、多仓自提、智能推荐、风控、多语言；另真实微信 / 支付宝商户资质接入（代码已就绪，见 3.16）、快递 100 / 快递鸟真实轨迹源。</p>
+
+  <footer>
+    悦集商城 功能操作手册 · V15　|　截图取自 2026-11-02 本地全栈实跑环境（网关 8080 + 9 服务 + 三端前端）<br>
+    界面与文案如与最新代码不一致，以代码实现为准；本手册随版本迭代更新。
+  </footer>
+
+</main>
+</body>
+</html>

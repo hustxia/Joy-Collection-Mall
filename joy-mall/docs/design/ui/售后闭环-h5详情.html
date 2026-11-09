@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>售后闭环 - H5 售后详情</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #eef0f4; display: flex; justify-content: center; padding: 24px; color: #323233; }
+  .phone { width: 390px; height: 844px; background: #f5f6fa; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,.15); display: flex; flex-direction: column; }
+  .navbar { background: #fff; height: 46px; display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; }
+  .navbar .back { position: absolute; left: 14px; color: #1989fa; font-size: 20px; }
+  .navbar .title { font-size: 16px; font-weight: 600; }
+  .scroll { flex: 1; overflow: hidden; }
+  .banner { background: linear-gradient(135deg, #4a6cf7, #6b8cff); color: #fff; padding: 18px 16px; }
+  .banner .st { font-size: 19px; font-weight: 700; }
+  .banner .sub { font-size: 12px; opacity: .85; margin-top: 5px; }
+  .card { background: #fff; border-radius: 12px; margin: 12px; padding: 14px; }
+  .goods { display: flex; gap: 10px; }
+  .goods img { width: 64px; height: 64px; border-radius: 8px; background: #f2f3f5; object-fit: cover; }
+  .goods .g-name { font-size: 14px; line-height: 1.4; }
+  .goods .g-spec { font-size: 12px; color: #969799; margin-top: 4px; }
+  .goods .g-price { font-size: 14px; color: #ee0a24; margin-top: 4px; font-weight: 600; }
+  .row { display: flex; justify-content: space-between; padding: 9px 0; font-size: 14px; }
+  .row .k { color: #646566; flex-shrink: 0; margin-right: 16px; }
+  .row .v { text-align: right; word-break: break-all; }
+  .amount { color: #ee0a24; font-weight: 700; }
+  .cell-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+  .imgs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .imgs img { width: 72px; height: 72px; border-radius: 8px; object-fit: cover; background: #f2f3f5; }
+  .audit-box { background: #f7f8fa; border-radius: 8px; padding: 10px 12px; font-size: 13px; color: #646566; }
+  .audit-box b { color: #323233; }
+  .timeline { padding-left: 4px; }
+  .tl-item { position: relative; padding: 0 0 18px 18px; }
+  .tl-item::before { content: ''; position: absolute; left: 0; top: 4px; width: 8px; height: 8px; border-radius: 50%; background: #4a6cf7; }
+  .tl-item::after { content: ''; position: absolute; left: 3.5px; top: 14px; bottom: 0; width: 1px; background: #ebedf0; }
+  .tl-item:last-child::after { display: none; }
+  .tl-item.gray::before { background: #c8c9cc; }
+  .tl-content { font-size: 13px; line-height: 1.5; }
+  .tl-time { font-size: 11px; color: #969799; margin-top: 3px; }
+  .footer { flex-shrink: 0; background: #fff; padding: 10px 14px; display: flex; justify-content: flex-end; gap: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,.04); }
+  .btn { height: 38px; padding: 0 22px; border-radius: 19px; font-size: 14px; border: 1px solid #ebedf0; background: #fff; color: #323233; }
+  .btn.warn { border-color: #ff976a; color: #ff976a; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="navbar"><span class="back">‹</span><span class="title">售后详情</span></div>
+  <div class="scroll">
+    <div class="banner">
+      <div class="st">已退款</div>
+      <div class="sub">退款 ¥184.00 已于 2026-10-29 15:32 原路退回</div>
+    </div>
+    <div class="card">
+      <div class="goods">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect fill='%23e8ebf5' width='64' height='64'/%3E%3Ctext x='32' y='38' text-anchor='middle' font-size='20' fill='%23a9b4d6'%3E包%3C/text%3E%3C/svg%3E">
+        <div>
+          <div class="g-name">木白 通勤双肩包</div>
+          <div class="g-spec">颜色:雾灰 / 容量:20L ×1</div>
+          <div class="g-price">¥199.00</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row"><span class="k">售后单号</span><span class="v">RF20261029153000123456</span></div>
+      <div class="row"><span class="k">关联订单</span><span class="v" style="color:#1989fa">M20261029103812009001</span></div>
+      <div class="row"><span class="k">售后类型</span><span class="v">退货退款</span></div>
+      <div class="row"><span class="k">退款金额</span><span class="v amount">¥184.00</span></div>
+      <div class="row"><span class="k">退款时间</span><span class="v">2026-10-29 15:32:08</span></div>
+      <div class="row"><span class="k">申请原因</span><span class="v">拉链有瑕疵，与页面描述不符，申请退款。</span></div>
+    </div>
+    <div class="card">
+      <div class="cell-title">审核意见</div>
+      <div class="audit-box"><b>商家已同意</b>：情况属实，同意退货退款，退款已原路退回。</div>
+    </div>
+    <div class="card">
+      <div class="cell-title">凭证图</div>
+      <div class="imgs">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Crect fill='%23eef1f8' width='72' height='72'/%3E%3Ctext x='36' y='40' text-anchor='middle' font-size='11' fill='%23a9b4d6'%3E凭证1%3C/text%3E%3C/svg%3E">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Crect fill='%23eef1f8' width='72' height='72'/%3E%3Ctext x='36' y='40' text-anchor='middle' font-size='11' fill='%23a9b4d6'%3E凭证2%3C/text%3E%3C/svg%3E">
+      </div>
+    </div>
+    <div class="card">
+      <div class="cell-title">进度时间线</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-content">售后退款完成，金额 184.00 元（mock 渠道），库存已回补</div>
+          <div class="tl-time">2026-10-29 15:32:08 · 商家</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-content">售后审核通过：情况属实，同意退货退款</div>
+          <div class="tl-time">2026-10-29 14:20:11 · 商家</div>
+        </div>
+        <div class="tl-item gray">
+          <div class="tl-content">提交售后申请（退货退款，金额 184.00 元）</div>
+          <div class="tl-time">2026-10-29 13:05:44 · 会员</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><button class="btn">查看订单</button></div>
+</div>
+</body>
+</html>

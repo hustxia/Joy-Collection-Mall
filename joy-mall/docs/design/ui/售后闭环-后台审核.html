@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>售后闭环 - 后台售后审核</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif; background: #f0f2f5; color: #303133; font-size: 14px; }
+  .layout { display: flex; min-height: 100vh; }
+  .aside { width: 210px; background: #2b3a4b; color: #cfd8e3; flex-shrink: 0; }
+  .aside .logo { height: 56px; display: flex; align-items: center; padding: 0 20px; font-weight: 700; color: #fff; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .aside .group { padding: 10px 0; }
+  .aside .group-title { padding: 8px 20px; font-size: 12px; color: #8496ab; }
+  .aside a { display: block; padding: 11px 20px 11px 32px; color: #cfd8e3; font-size: 13px; }
+  .aside a.on { background: #409eff; color: #fff; }
+  .main { flex: 1; display: flex; flex-direction: column; }
+  .topbar { height: 56px; background: #fff; box-shadow: 0 1px 4px rgba(0,21,41,.08); display: flex; align-items: center; justify-content: flex-end; padding: 0 24px; gap: 16px; font-size: 13px; color: #606266; }
+  .page { padding: 20px; flex: 1; }
+  .filter-card { background: #fff; border-radius: 4px; padding: 18px 20px 4px; margin-bottom: 16px; }
+  .filter-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .f-item { display: flex; align-items: center; gap: 8px; }
+  .f-item label { font-size: 13px; color: #606266; }
+  .ipt { border: 1px solid #dcdfe6; border-radius: 4px; height: 32px; padding: 0 10px; font-size: 13px; width: 180px; color: #606266; background: #fff; }
+  .btn { border-radius: 4px; font-size: 13px; padding: 8px 16px; border: 1px solid #dcdfe6; background: #fff; color: #606266; cursor: pointer; }
+  .btn.primary { background: #409eff; border-color: #409eff; color: #fff; }
+  .table-card { background: #fff; border-radius: 4px; padding: 4px 20px 18px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { font-weight: 600; color: #909399; font-size: 13px; text-align: left; padding: 12px 10px; border-bottom: 1px solid #ebeef5; }
+  td { padding: 12px 10px; border-bottom: 1px solid #ebeef5; font-size: 13px; color: #606266; vertical-align: middle; }
+  tr:hover td { background: #f5f7fa; }
+  .tag { display: inline-block; padding: 2px 9px; border-radius: 3px; font-size: 12px; line-height: 20px; }
+  .tag.warning { background: #fdf6ec; color: #e6a23c; }
+  .tag.success { background: #f0f9eb; color: #67c23a; }
+  .tag.danger { background: #fef0f0; color: #f56c6c; }
+  .tag.info { background: #f4f4f5; color: #909399; }
+  .tag.primary { background: #ecf5ff; color: #409eff; }
+  .link { color: #409eff; cursor: pointer; font-size: 13px; }
+  .link.danger { color: #f56c6c; }
+  .link + .link { margin-left: 10px; }
+  .pager { display: flex; justify-content: flex-end; gap: 6px; margin-top: 14px; font-size: 13px; color: #606266; align-items: center; }
+  .pager .pg { min-width: 28px; height: 28px; border: 1px solid #dcdfe6; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; background: #fff; }
+  .pager .pg.on { background: #409eff; border-color: #409eff; color: #fff; }
+  /* 审核弹窗 */
+  .mask { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; }
+  .dialog { width: 620px; background: #fff; border-radius: 6px; }
+  .dlg-header { padding: 16px 22px; border-bottom: 1px solid #f2f3f5; display: flex; justify-content: space-between; align-items: center; }
+  .dlg-header .t { font-size: 16px; font-weight: 700; }
+  .dlg-header .x { color: #909399; cursor: pointer; font-size: 18px; }
+  .dlg-body { padding: 20px 22px; }
+  .kv { display: flex; margin-bottom: 10px; font-size: 13px; }
+  .kv .k { width: 90px; color: #909399; flex-shrink: 0; }
+  .kv .v { color: #303133; }
+  .kv .v.money { color: #f56c6c; font-weight: 700; }
+  .imgs { display: flex; gap: 8px; }
+  .imgs img { width: 64px; height: 64px; border-radius: 4px; background: #f2f3f5; }
+  .form-item { margin-top: 16px; }
+  .form-item label { display: block; font-size: 13px; color: #606266; margin-bottom: 8px; }
+  .radio-line { display: flex; gap: 20px; font-size: 14px; }
+  .radio-line span { cursor: pointer; }
+  .radio-line .on { color: #409eff; font-weight: 600; }
+  textarea { width: 100%; border: 1px solid #dcdfe6; border-radius: 4px; min-height: 70px; padding: 10px 12px; font-size: 13px; resize: none; font-family: inherit; }
+  .warn-box { background: #fdf6ec; border: 1px solid #faecd8; border-radius: 4px; padding: 8px 12px; font-size: 12px; color: #b88230; margin-top: 14px; line-height: 1.7; }
+  .dlg-footer { padding: 14px 22px; border-top: 1px solid #f2f3f5; text-align: right; }
+  .dlg-footer .btn { margin-left: 10px; padding: 9px 20px; }
+  .btn.confirm { background: #67c23a; border-color: #67c23a; color: #fff; }
+  .btn.reject { background: #f56c6c; border-color: #f56c6c; color: #fff; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <div class="aside">
+    <div class="logo">悦集商城后台</div>
+    <div class="group">
+      <div class="group-title">首页</div>
+      <a>仪表盘</a>
+    </div>
+    <div class="group">
+      <div class="group-title">商品管理</div>
+      <a>商品列表</a><a>分类管理</a><a>品牌管理</a><a>SKU 管理</a>
+    </div>
+    <div class="group">
+      <div class="group-title">交易管理</div>
+      <a>订单管理</a><a>订单日志</a><a class="on">售后退款单</a><a>优惠券</a><a>券领取记录</a>
+    </div>
+    <div class="group">
+      <div class="group-title">会员管理</div>
+      <a>会员列表</a><a>收货地址</a>
+    </div>
+  </div>
+  <div class="main">
+    <div class="topbar"><span>admin</span><span>退出</span></div>
+    <div class="page">
+      <div class="filter-card">
+        <div class="filter-row">
+          <div class="f-item"><label>售后单号</label><input class="ipt" placeholder="支持精确/模糊"></div>
+          <div class="f-item"><label>订单号</label><input class="ipt" placeholder="请输入订单号"></div>
+          <div class="f-item"><label>状态</label>
+            <select class="ipt"><option>待审核</option><option>已同意</option><option>已拒绝</option><option>已退款</option><option>已关闭</option></select>
+          </div>
+          <div class="f-item"><label>类型</label>
+            <select class="ipt" style="width:120px"><option>全部</option><option>仅退款</option><option>退货退款</option></select>
+          </div>
+          <button class="btn primary">查 询</button><button class="btn">重 置</button>
+        </div>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead><tr>
+            <th>售后单号</th><th>订单号</th><th>会员</th><th>类型</th><th>退款金额</th><th>状态</th><th>申请时间</th><th>操作</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>RF20261029142000234567</td>
+              <td>M20261029110110174213</td>
+              <td>PC联调<br><span style="color:#c0c4cc;font-size:12px">13942869943</span></td>
+              <td>仅退款</td>
+              <td style="color:#f56c6c;font-weight:600">¥15,981.00</td>
+              <td><span class="tag warning">待审核</span></td>
+              <td>2026-10-29 14:20:11</td>
+              <td><span class="link">详情</span><span class="link">审核</span></td>
+            </tr>
+            <tr>
+              <td>RF20261028103000000001</td>
+              <td>M20261029103812009001</td>
+              <td>联调测试<br><span style="color:#c0c4cc;font-size:12px">13941492332</span></td>
+              <td>退货退款</td>
+              <td style="color:#f56c6c;font-weight:600">¥184.00</td>
+              <td><span class="tag danger">已拒绝</span></td>
+              <td>2026-10-28 10:30:00</td>
+              <td><span class="link">详情</span></td>
+            </tr>
+            <tr>
+              <td>RF20261028154500000002</td>
+              <td>M20261029103812009001</td>
+              <td>联调测试<br><span style="color:#c0c4cc;font-size:12px">13941492332</span></td>
+              <td>仅退款</td>
+              <td style="color:#f56c6c;font-weight:600">¥184.00</td>
+              <td><span class="tag info">已关闭</span></td>
+              <td>2026-10-28 15:45:00</td>
+              <td><span class="link">详情</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pager"><span>共 3 条</span><span class="pg">‹</span><span class="pg on">1</span><span class="pg">›</span><span>10 条/页</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mask">
+  <div class="dialog">
+    <div class="dlg-header"><span class="t">审核售后申请</span><span class="x">×</span></div>
+    <div class="dlg-body">
+      <div class="kv"><span class="k">售后单号</span><span class="v">RF20261029142000234567</span></div>
+      <div class="kv"><span class="k">关联订单</span><span class="v">M20261029110110174213（已完成）</span></div>
+      <div class="kv"><span class="k">申请人</span><span class="v">PC联调（13942869943）</span></div>
+      <div class="kv"><span class="k">售后类型</span><span class="v">仅退款</span></div>
+      <div class="kv"><span class="k">退款金额</span><span class="v money">¥15,981.00（订单实付）</span></div>
+      <div class="kv"><span class="k">申请原因</span><span class="v">手机屏幕右下角有轻微划痕，与全新描述不符。</span></div>
+      <div class="kv"><span class="k">凭证图</span><span class="imgs">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect fill='%23eef1f8' width='64' height='64'/%3E%3Ctext x='32' y='37' text-anchor='middle' font-size='11' fill='%23a9b4d6'%3E凭证1%3C/text%3E%3C/svg%3E">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect fill='%23eef1f8' width='64' height='64'/%3E%3Ctext x='32' y='37' text-anchor='middle' font-size='11' fill='%23a9b4d6'%3E凭证2%3C/text%3E%3C/svg%3E">
+      </span></div>
+      <div class="form-item">
+        <label>审核结论</label>
+        <div class="radio-line"><span class="on">同意</span><span>拒绝</span></div>
+      </div>
+      <div class="form-item">
+        <label>审核意见（拒绝时必填）</label>
+        <textarea placeholder="请输入审核意见（用户可见）">情况属实，同意退款。</textarea>
+      </div>
+      <div class="warn-box">
+        同意后该售后单进入「已同意」状态，需再执行「确认退款」完成退款（mock 渠道）；<br>
+        退货退款类型在退款时自动回补库存并扣减销量；仅退款不影响库存。
+      </div>
+    </div>
+    <div class="dlg-footer">
+      <button class="btn">取 消</button>
+      <button class="btn reject">拒绝</button>
+      <button class="btn confirm">同 意</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

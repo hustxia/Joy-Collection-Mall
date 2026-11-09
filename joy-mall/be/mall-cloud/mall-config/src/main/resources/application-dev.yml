@@ -1,0 +1,16 @@
+# V6 K-02：dev profile —— 本机开箱即跑：所有值都有默认，不配环境变量也能起
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/yueji_mall?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# 跨域 Feign 调用目标（静态地址，无注册中心；@FeignClient 声明处也有同值缺省）
+feign:
+  clients:
+    mall-goods: ${FEIGN_MALL_GOODS_URL:http://localhost:8202}
+    mall-member: ${FEIGN_MALL_MEMBER_URL:http://localhost:8203}
+    mall-order: ${FEIGN_MALL_ORDER_URL:http://localhost:8204}
+    mall-marketing: ${FEIGN_MALL_MARKETING_URL:http://localhost:8205}
+    mall-refund: ${FEIGN_MALL_REFUND_URL:http://localhost:8206}

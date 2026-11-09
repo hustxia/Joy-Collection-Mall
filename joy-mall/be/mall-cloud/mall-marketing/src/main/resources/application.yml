@@ -1,0 +1,94 @@
+# V6 S-04/O-02：健康端点 + Prometheus 指标（网关 /health/aggregate 聚合读取）
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: never
+  # V10：本机演示环境无 Redis。Redis 只是秒杀的加速层（连不上自动降级 DB 乐观锁），
+  # 不能让它把 /health/aggregate 拖成 DEGRADED，故关闭 Redis 健康指示器。
+  health:
+    redis:
+      enabled: false
+  tracing:
+    sampling:
+      probability: 1.0
+    propagation:
+      type: w3c
+
+server:
+  port: 8205
+  tomcat:
+    max-http-form-post-size: 25MB
+
+spring:
+  application:
+    name: mall-marketing
+  # 跨服务调用必须有超时：下游慢一个请求，不加超时就会拖满调用方线程池（雪崩起点）
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: ${FEIGN_CONNECT_TIMEOUT:2000}
+            readTimeout: ${FEIGN_READ_TIMEOUT:5000}
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 25MB
+  datasource:
+    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/yueji_mall?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  # V8：Redis 仅用于秒杀预扣/抽奖计数的加速层，连不上时业务自动降级 DB 乐观锁，
+  # 故本机无 Redis 也能起服务（连接惰性建立，启动不校验）
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:127.0.0.1}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      timeout: 2000
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.mall.entity
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: assign_id
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+app:
+  ip-region:
+    enabled: true
+    offline: true
+    api: http://ip-api.com/json/{ip}?lang=zh-CN
+    timeout-ms: 3000
+
+logging:
+  # V6 O-03：统一日志格式（时间 / 级别 / 线程 / traceId / logger / 消息）
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [%X{traceId:-}] %logger{40} - %msg%n"
+  level:
+    com.mall: info
+
+auth:
+  session-hours: 24
+
+# V13 促销引擎：叠加策略
+# best  = 互斥取最优（默认）：多个活动同时命中时只采纳优惠最大的一个
+# stack = 叠加：可叠加活动（stackable=1）按「折扣类先、满减类后」依次生效，不可叠加的再择优取 1 个
+mall:
+  promotion:
+    stack-mode: ${PROMOTION_STACK_MODE:best}

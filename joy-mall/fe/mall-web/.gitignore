@@ -1,0 +1,14 @@
+node_modules/
+dist/
+logs/
+*.log
+.DS_Store
+.idea/
+.vscode/
+.gen-artifacts/
+.gen-verify/
+
+dist-verify/
+dist-check/
+dist-vcheck/
+dist-v16web/

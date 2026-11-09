@@ -1,0 +1,16 @@
+# V6 K-02：prod profile —— 刻意不给默认值：缺环境变量直接启动失败（fail-fast），
+# 避免「带着 localhost / root 的错配置上线」。启动前必须注入 DB_* 与 FEIGN_* 地址。
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+feign:
+  clients:
+    mall-goods: ${FEIGN_MALL_GOODS_URL}
+    mall-member: ${FEIGN_MALL_MEMBER_URL}
+    mall-order: ${FEIGN_MALL_ORDER_URL}
+    mall-marketing: ${FEIGN_MALL_MARKETING_URL}
+    mall-refund: ${FEIGN_MALL_REFUND_URL}

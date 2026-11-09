@@ -1,0 +1,283 @@
+# V6 D-02：一条命令拉起整套商城（mysql + 6 服务 + 网关 + 三端静态）
+#
+# 前置：在仓库根目录执行 `mvn -f be/mall-cloud/pom.xml -DskipTests package`（产物 target/*.jar）。
+# 起：docker compose up -d --build   （或 scripts/up.sh）
+# 看：docker compose logs -f          （或 scripts/logs.sh）
+# 停：docker compose down             （或 scripts/down.sh）
+# 清库重建：docker compose down -v    （或 scripts/reset.sh，会删数据卷）
+
+name: mall
+
+x-db-env: &db-env
+  TZ: Asia/Shanghai
+  DB_URL: jdbc:mysql://mysql:3306/yueji_mall?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+  DB_USERNAME: ${DB_USERNAME:-root}
+  DB_PASSWORD: ${DB_PASSWORD:-root}
+
+x-app-build: &app-build-context
+  context: ./be/mall-cloud
+  dockerfile: Dockerfile
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_DATABASE: yueji_mall
+      TZ: Asia/Shanghai
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --default-time-zone=+08:00
+    volumes:
+      # 建库基线：audit/yueji_mall-dump.sql 是当前版本的完整快照（表结构 + 演示数据）
+      # 早期分散的 db/v*-*.sql 迁移脚本已移除，统一由这一份全量 dump 初始化
+      - ./audit/yueji_mall-dump.sql:/docker-entrypoint-initdb.d/00-base.sql:ro
+      - mysql-data:/var/lib/mysql
+    ports:
+      # 只映射到 13306：避免与本机已装的 MySQL(3306) 冲突；容器内仍用 mysql:3306
+      - "13306:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+    restart: unless-stopped
+    networks: [mall-net]
+
+  # V8 P0：秒杀 Redis 预扣 / 抽奖限量计数。不可用时业务自动降级 DB 乐观锁（见 v8 规划 §二）
+  redis:
+    image: redis:7-alpine
+    command: redis-server --save "" --appendonly no
+    ports:
+      - "16379:6379"   # 避让本机可能已占用的 6379；容器内仍用 redis:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    networks: [mall-net]
+
+  mall-system:
+    build:
+      <<: *app-build-context
+      args:
+        JAR_FILE: mall-system/target/mall-system-1.0.0.jar
+    environment:
+      <<: *db-env
+      FILE_UPLOAD_DIR: /app/uploads
+      # 仅演示/CI 冒烟置 true（让脚本自动取到算术验证码答案）；生产必须保持 false
+      AUTH_CAPTCHA_EXPOSE_ANSWER: ${AUTH_CAPTCHA_EXPOSE_ANSWER:-false}
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8201/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+    networks: [mall-net]
+
+  mall-goods:
+    build:
+      <<: *app-build-context
+      args:
+        JAR_FILE: mall-goods/target/mall-goods-1.0.0.jar
+    environment:
+      <<: *db-env
+      # V10：C 端商品列表补店铺名
+      FEIGN_MALL_MERCHANT_URL: http://mall-merchant:8207
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8202/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+    networks: [mall-net]
+
+  mall-member:
+    build:
+      <<: *app-build-context
+      args:
+        JAR_FILE: mall-member/target/mall-member-1.0.0.jar
+    environment:
+      <<: *db-env
+      FEIGN_MALL_GOODS_URL: http://mall-goods:8202
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8203/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+    networks: [mall-net]
+
+  mall-order:
+    build:
+      <<: *app-build-context
+      args:
+        JAR_FILE: mall-order/target/mall-order-1.0.0.jar
+    environment:
+      <<: *db-env
+      FEIGN_MALL_GOODS_URL: http://mall-goods:8202
+      FEIGN_MALL_MEMBER_URL: http://mall-member:8203
+      FEIGN_MALL_MARKETING_URL: http://mall-marketing:8205
+      FEIGN_MALL_REFUND_URL: http://mall-refund:8206
+      # V10：订单完成 → 商家货款结算
+      FEIGN_MALL_MERCHANT_URL: http://mall-merchant:8207
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8204/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+    networks: [mall-net]
+
+  mall-marketing:
+    build:
+      <<: *app-build-context
+      args:
+        JAR_FILE: mall-marketing/target/mall-marketing-1.0.0.jar
+    environment:
+      <<: *db-env
+      SPRING_DATA_REDIS_HOST: redis
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8205/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+    networks: [mall-net]
+
+  mall-refund:
+    build:
+      <<: *app-build-context
+      args:
+        JAR_FILE: mall-refund/target/mall-refund-1.0.0.jar
+    environment:
+      <<: *db-env
+      FEIGN_MALL_ORDER_URL: http://mall-order:8204
+      FEIGN_MALL_GOODS_URL: http://mall-goods:8202
+      FEIGN_MALL_MEMBER_URL: http://mall-member:8203
+      # V10：退款完成 → 冲减商家应收
+      FEIGN_MALL_MERCHANT_URL: http://mall-merchant:8207
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8206/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+    networks: [mall-net]
+
+  mall-merchant:
+    build:
+      <<: *app-build-context
+      args:
+        JAR_FILE: mall-merchant/target/mall-merchant-1.0.0.jar
+    environment:
+      <<: *db-env
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8207/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+    networks: [mall-net]
+
+  mall-gateway:
+    build:
+      <<: *app-build-context
+      args:
+        JAR_FILE: mall-gateway/target/mall-gateway-1.0.0.jar
+    environment:
+      <<: *db-env
+      # 容器内路由目标用服务名（不依赖注册中心，仍是静态地址）
+      GATEWAY_URI_SYSTEM: http://mall-system:8201
+      GATEWAY_URI_GOODS: http://mall-goods:8202
+      GATEWAY_URI_MEMBER: http://mall-member:8203
+      GATEWAY_URI_ORDER: http://mall-order:8204
+      GATEWAY_URI_MARKETING: http://mall-marketing:8205
+      GATEWAY_URI_REFUND: http://mall-refund:8206
+      GATEWAY_URI_MERCHANT: http://mall-merchant:8207
+      # /health/aggregate 的探活目标（name=url 逗号分隔）
+      GATEWAY_HEALTH_TARGETS: >-
+        mall-system=http://mall-system:8201,
+        mall-goods=http://mall-goods:8202,
+        mall-member=http://mall-member:8203,
+        mall-order=http://mall-order:8204,
+        mall-marketing=http://mall-marketing:8205,
+        mall-refund=http://mall-refund:8206,
+        mall-merchant=http://mall-merchant:8207
+      # 演示环境所有流量都来自 nginx 同一个 IP，限流额度按「全站」放宽；本机默认 20 见网关 yml
+      GATEWAY_RATE_LIMIT_RPS: ${GATEWAY_RATE_LIMIT_RPS:-50}
+      GATEWAY_RATE_LIMIT_BURST: ${GATEWAY_RATE_LIMIT_BURST:-100}
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+    networks: [mall-net]
+
+  mall-web:
+    build:
+      context: .
+      dockerfile: deploy/nginx/Dockerfile
+    ports:
+      - "9431:9431"   # 后台管理
+      - "9432:9432"   # PC 商城
+      - "9531:9531"   # 移动端 H5
+    depends_on:
+      mall-gateway:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:9431/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    restart: unless-stopped
+    networks: [mall-net]
+
+volumes:
+  mysql-data:
+  uploads:
+
+networks:
+  mall-net:
+    driver: bridge

@@ -1,0 +1,66 @@
+/* 全局样式：移动端基础重置 + 主题变量 */
+:root {
+  --mall-primary: #4a6cf7;
+  --mall-danger: #ee5340;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #f7f8fa;
+  color: #323233;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.page {
+  min-height: 100vh;
+  background: #f7f8fa;
+}
+
+/* tab 页内容区给底部 tabbar 留位 */
+.page--tab {
+  padding-bottom: 60px;
+}
+
+.price {
+  color: var(--mall-danger);
+  font-weight: 600;
+}
+
+.price .symbol {
+  font-size: 11px;
+  margin-right: 1px;
+}
+
+.text-gray {
+  color: #969799;
+}
+
+/* 商品双列瀑布卡片 */
+.goods-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 10px;
+}
+
+.goods-grid > * {
+  width: calc(50% - 4px);
+}
+
+/* 富文本详情图片自适应 */
+.goods-detail-rich img {
+  max-width: 100%;
+  display: block;
+}

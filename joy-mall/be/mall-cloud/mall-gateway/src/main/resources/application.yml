@@ -1,0 +1,170 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: mall-gateway
+  # V6 S-03：网关集中鉴权直连会话表（与各服务 TokenStore 同库同口径）
+  datasource:
+    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/yueji_mall?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    gateway:
+      # 前端 dev 代理已把 /dev-api(/api/mall)? 与 /api 前缀剥离，网关收到的是干净路径。
+      # 按路径前缀路由到对应业务服务（静态 uri，无注册中心）。
+      # uri 支持环境变量覆盖：容器内用服务名（GATEWAY_URI_ORDER=http://mall-order:8204），
+      # 本机默认仍指向 127.0.0.1。
+      #
+      # 注意：
+      # 1) 同一 route 内多条 Path 断言是「与」关系，必须合并成一条 Path、用逗号分隔才是「或」。
+      # 2) /inner/** 不对外暴露——服务间 Feign 调用直连各服务端口，不经网关。
+      routes:
+        # —— C 端 ——
+        - id: route-order-shop
+          uri: ${GATEWAY_URI_ORDER:http://localhost:8204}
+          predicates:
+            # V12：/shop/delivery 物流轨迹、/shop/invoice 开票申请都在订单域
+            - Path=/shop/order/**,/shop/pay/**,/shop/delivery/**,/shop/invoice/**
+        - id: route-refund-shop
+          uri: ${GATEWAY_URI_REFUND:http://localhost:8206}
+          predicates:
+            - Path=/shop/refund/**
+        - id: route-marketing-shop
+          uri: ${GATEWAY_URI_MARKETING:http://localhost:8205}
+          predicates:
+            # V14：补齐 V8/V9 的 C 端页面接口（秒杀/拼团/抽奖/分销）
+            - Path=/shop/coupon/**,/shop/seckill/**,/shop/group/**,/shop/lottery/**,/shop/distributor/**,/shop/promotion/**
+        - id: route-goods-shop
+          uri: ${GATEWAY_URI_GOODS:http://localhost:8202}
+          predicates:
+            # 商品域 C 端：/shop/banners /shop/categories /shop/goods[/{id}] /shop/review(V7)
+            # V14：/shop/search 搜索增强（REQ-P1-04）
+            - Path=/shop/banners/**,/shop/categories/**,/shop/goods/**,/shop/review/**,/shop/search/**
+        - id: route-support-shop
+          uri: ${GATEWAY_URI_SUPPORT:http://localhost:8208}
+          predicates:
+            # V14 客服域 C 端：/shop/ticket（工单提交/我的工单/留言）
+            - Path=/shop/ticket/**
+        - id: route-member-shop
+          uri: ${GATEWAY_URI_MEMBER:http://localhost:8203}
+          predicates:
+            # 会员域 C 端：鉴权/地址/购物车/足迹 + V7 收藏/积分/签到/消息
+            - Path=/shop/auth/**,/shop/address/**,/shop/cart/**,/shop/footprint/**,/shop/favorite/**,/shop/point/**,/shop/signin/**,/shop/notice/**,/shop/member/**,/shop/agreement/**,/shop/member-level/**,/shop/price-remind/**
+        - id: route-merchant-shop
+          uri: ${GATEWAY_URI_MERCHANT:http://localhost:8207}
+          predicates:
+            # V10 商家域 C 端：店铺列表 / 店铺信息（店内商品走 /shop/goods?merchantId=）
+            - Path=/shop/merchant/**
+        # —— 后台管理 ——
+        - id: route-order-admin
+          uri: ${GATEWAY_URI_ORDER:http://localhost:8204}
+          predicates:
+            # V12：发货单 / 发票 / 支付流水 / 支付对账均在订单域
+            - Path=/mall_order/**,/mall_order_log/**,/mall_delivery/**,/mall_invoice/**,/mall_payment/**,/mall_pay_reconcile/**
+        - id: route-refund-admin
+          uri: ${GATEWAY_URI_REFUND:http://localhost:8206}
+          predicates:
+            - Path=/mall_refund/**
+        - id: route-marketing-admin
+          uri: ${GATEWAY_URI_MARKETING:http://localhost:8205}
+          predicates:
+            # V14：V8/V9 营销后台四页（秒杀/拼团/抽奖/分销佣金）
+            - Path=/mall_coupon/**,/mall_coupon_record/**,/mall_seckill/**,/mall_group/**,/mall_lottery/**,/mall_distributor/**,/mall_commission/**,/mall_commission_rule/**,/mall_withdrawal/**,/mall_promotion/**
+        - id: route-member-admin
+          uri: ${GATEWAY_URI_MEMBER:http://localhost:8203}
+          predicates:
+            - Path=/mall_member/**,/mall_address/**,/mall_notice/**,/mall_member_level/**,/mall_agreement/**
+        - id: route-goods-admin
+          uri: ${GATEWAY_URI_GOODS:http://localhost:8202}
+          predicates:
+            # V12：/mall_freight_template 运费模板在商品域（计费就近商品/店铺）
+            - Path=/mall_goods/**,/mall_sku/**,/mall_brand/**,/mall_category/**,/mall_banner/**,/mall_review/**,/mall_freight_template/**
+        - id: route-merchant-admin
+          uri: ${GATEWAY_URI_MERCHANT:http://localhost:8207}
+          predicates:
+            # V10 商家域后台：入驻/店铺 + 结算单 + 提现
+            - Path=/mall_merchant/**,/mall_merchant_settlement/**,/mall_merchant_withdrawal/**,/merchant-admin/**
+        - id: route-support-admin
+          uri: ${GATEWAY_URI_SUPPORT:http://localhost:8208}
+          predicates:
+            # V14 客服域后台：工单处理与统计（页面本期未交付，接口先通）
+            - Path=/mall_ticket/**
+        # V16 在线 AI 客服（8210）
+        - id: route-ai-shop
+          uri: ${GATEWAY_URI_AI:http://localhost:8210}
+          predicates:
+            - Path=/shop/ai-chat/**
+        - id: route-ai-admin
+          uri: ${GATEWAY_URI_AI:http://localhost:8210}
+          predicates:
+            - Path=/mall_chat/**
+        - id: route-message-admin
+          uri: ${GATEWAY_URI_MESSAGE:http://localhost:8209}
+          predicates:
+            # V14 消息台账：/mall_message_log/**（/inner/** 不对外，见下方兜底路由）
+            - Path=/mall_message_log/**,/mall_message_template/**
+        # —— 系统域 ——
+        # /auth 登录 /file /thumb /flow 工作流 /system/** 字典与操作日志 /loginLog 登录日志
+        # /mall_dashboard 仪表盘 /img /uploads 静态图 /shop/upload 前台图片上传
+        - id: route-system
+          uri: ${GATEWAY_URI_SYSTEM:http://localhost:8201}
+          predicates:
+            - Path=/auth/**,/health/**,/file/**,/thumb/**,/flow/**,/system/**,/sys/**,/loginLog/**,/mall_dashboard/**,/img/**,/uploads/**,/shop/upload/**
+        # V6 S-03：/inner/** 永不对外——Gateway 先按路由匹配（无匹配会直接 404），
+        # 因此显式加一条兜底路由让请求进入过滤器链，由 GatewayAuthFilter 统一返回 403
+        # （uri 不会被真正转发，过滤器已提前中断响应）。
+        - id: route-inner-block
+          uri: ${GATEWAY_URI_SYSTEM:http://localhost:8201}
+          predicates:
+            - Path=/inner/**,/inner
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: '*'
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: '*'
+
+# V6 S-04/O-02：网关健康自检 + 指标暴露
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: never
+  tracing:
+    sampling:
+      probability: 1.0
+    propagation:
+      type: w3c
+
+logging:
+  # V6 O-03：统一日志格式（时间 / 级别 / 线程 / traceId / logger / 消息）
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [%X{traceId:-}] %logger{40} - %msg%n"
+  level:
+    org.springframework.cloud.gateway: info
+
+# V6 S-03 网关防护（enabled=false 可秒级整体回退，服务侧仍有 AuthContextFilter 双校验）
+gateway:
+  auth:
+    enabled: ${GATEWAY_AUTH_ENABLED:true}
+    member-prefix: "m:"
+    # 追加白名单，逗号分隔；格式 "METHOD /prefix"，只写路径表示不限方法
+    extra-whitelist: ""
+  rate-limit:
+    enabled: ${GATEWAY_RATE_LIMIT_ENABLED:true}
+    rps: ${GATEWAY_RATE_LIMIT_RPS:20}
+    burst: ${GATEWAY_RATE_LIMIT_BURST:40}
+    path-prefix: /shop
+  health:
+    timeout-ms: ${GATEWAY_HEALTH_TIMEOUT_MS:2000}
+    targets: ""

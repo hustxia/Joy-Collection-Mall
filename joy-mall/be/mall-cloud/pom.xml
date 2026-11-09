@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.mall</groupId>
+    <artifactId>mall-cloud</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>mall-cloud</name>
+    <description>商城微服务拆分（按业务域：common/gateway/system/goods/member/order/marketing/refund）</description>
+
+    <modules>
+        <module>mall-config</module>
+        <module>mall-common</module>
+        <module>mall-test-support</module>
+        <module>mall-gateway</module>
+        <module>mall-system</module>
+        <module>mall-goods</module>
+        <module>mall-member</module>
+        <module>mall-order</module>
+        <module>mall-marketing</module>
+        <module>mall-refund</module>
+        <module>mall-merchant</module>
+        <!-- V14：客服工单（8208）/ 消息触达（8209） -->
+        <module>mall-support</module>
+        <module>mall-message</module>
+        <!-- V16：在线 AI 客服（8210） -->
+        <module>mall-ai</module>
+    </modules>
+
+    <properties>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-boot.version>3.2.5</spring-boot.version>
+        <spring-cloud.version>2023.0.3</spring-cloud.version>
+        <mybatis-plus.version>3.5.5</mybatis-plus.version>
+        <springdoc.version>2.3.0</springdoc.version>
+        <lombok.version>1.18.30</lombok.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>8.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <!-- JUnit 5 需要 surefire 3.x（Maven 3.6.3 默认 2.12.4 只认 JUnit4，会「跑 0 个用例」假绿） -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.4</version>
+                <configuration>
+                    <argLine>-Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai</argLine>
+                </configuration>
+            </plugin>
+            <!-- Spring MVC / Feign 依赖方法参数名反射，必须保留 -parameters（未使用 spring-boot-starter-parent） -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <parameters>true</parameters>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

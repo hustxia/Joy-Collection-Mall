@@ -1,0 +1,88 @@
+{
+  "root": "C:\\tmp\\mall",
+  "scanned_at": "2026-10-28 00:17:17",
+  "elapsed_sec": 0.88,
+  "file_count": 349,
+  "line_count": 33018,
+  "git_diff_only": false,
+  "summary": {
+    "P0": 0,
+    "P1": 2,
+    "P2": 3
+  },
+  "by_rule": [
+    {
+      "rule": "ERR-01",
+      "severity": "P1",
+      "category": "异常",
+      "title": "空 catch / 仅打印堆栈",
+      "hits": 2
+    },
+    {
+      "rule": "STY-03",
+      "severity": "P2",
+      "category": "规范",
+      "title": "单文件超过 800 行",
+      "hits": 2
+    },
+    {
+      "rule": "STY-01",
+      "severity": "P2",
+      "category": "规范",
+      "title": "遗留 TODO/FIXME",
+      "hits": 1
+    }
+  ],
+  "findings": [
+    {
+      "rule": "ERR-01",
+      "severity": "P1",
+      "category": "异常",
+      "title": "空 catch / 仅打印堆栈",
+      "advice": "至少记录上下文日志并返回明确错误；吞异常会让故障静默",
+      "file": "be/mall-server/src/main/java/com/mall/common/auth/TokenStore.java",
+      "line": 88,
+      "snippet": "} catch (Exception ignored) {"
+    },
+    {
+      "rule": "ERR-01",
+      "severity": "P1",
+      "category": "异常",
+      "title": "空 catch / 仅打印堆栈",
+      "advice": "至少记录上下文日志并返回明确错误；吞异常会让故障静默",
+      "file": "be/mall-server/src/main/java/com/mall/common/flow/BuiltinFlowService.java",
+      "line": 239,
+      "snippet": "} catch (Exception ignore) {"
+    },
+    {
+      "rule": "STY-01",
+      "severity": "P2",
+      "category": "规范",
+      "title": "遗留 TODO/FIXME",
+      "advice": "转成待办工单或当场处理，别长期留在代码里",
+      "file": "be/mall-server/src/main/java/com/mall/common/flow/BuiltinFlowService.java",
+      "line": 214,
+      "snippet": "// TODO 产物角色体系引入后按 roleCode 校验（当前基座无角色，恒放行） (本文件共 1 处)"
+    },
+    {
+      "rule": "STY-03",
+      "severity": "P2",
+      "category": "规范",
+      "title": "单文件超过 800 行",
+      "advice": "按领域拆分；同时确认是否有生成代码混入",
+      "file": "fe/mall-web/.gen-backup/GEN20261027131557/src/views/mall_order/index.vue",
+      "line": 1,
+      "snippet": "文件共 891 行"
+    },
+    {
+      "rule": "STY-03",
+      "severity": "P2",
+      "category": "规范",
+      "title": "单文件超过 800 行",
+      "advice": "按领域拆分；同时确认是否有生成代码混入",
+      "file": "fe/mall-web/src/views/mall_order/index.vue",
+      "line": 1,
+      "snippet": "文件共 891 行"
+    }
+  ]
+}

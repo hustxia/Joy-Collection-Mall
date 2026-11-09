@@ -1,0 +1,33 @@
+package com.mall.entity;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.mall.common.entity.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+/**
+ * 佣金规则
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@TableName("mall_commission_rule")
+public class MallCommissionRule extends BaseEntity {
+
+    /** 作用域：0全局1指定商品 */
+    private Integer scope;
+
+    /** 指定商品ID（scope=1时必填） */
+    private Long goodsId;
+
+    /** 佣金比例（‰） */
+    private Integer rate;
+
+    /** 固定佣金（分），与rate二选一优先fixed */
+    private Long fixed;
+
+    /** 分销层级：默认1（仅一级分销） */
+    private Integer level;
+
+    /** 状态：1启用0停用 */
+    private Integer status;
+}

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mall-shop H5 · V3 页面线框效果图</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; background:#eef0f4; color:#333; padding:32px 24px 64px; }
+  h1 { font-size:22px; margin-bottom:6px; }
+  .sub { color:#888; font-size:13px; margin-bottom:28px; }
+  .group-title { font-size:16px; font-weight:600; margin:34px 0 16px; padding-left:10px; border-left:4px solid #4a6cf7; }
+  .board { display:flex; flex-wrap:wrap; gap:32px; align-items:flex-start; }
+
+  .phone-wrap { width:270px; }
+  .phone { width:270px; height:560px; background:#fff; border:2px solid #222; border-radius:26px; overflow:hidden; position:relative; box-shadow:0 6px 18px rgba(0,0,0,.12); display:flex; flex-direction:column; }
+  .phone .statusbar { height:22px; background:#fff; display:flex; justify-content:space-between; align-items:center; padding:0 14px; font-size:9px; color:#333; flex:none; }
+  .phone .navbar { height:34px; background:#fff; border-bottom:1px solid #eee; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; position:relative; flex:none; }
+  .phone .navbar .back { position:absolute; left:12px; font-size:14px; color:#666; }
+  .phone .body { flex:1; overflow:hidden; position:relative; background:#f7f8fa; }
+  .phone .tabbar { height:42px; background:#fff; border-top:1px solid #eee; display:flex; flex:none; }
+  .phone .tabbar .tab { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:9px; color:#999; gap:2px; }
+  .phone .tabbar .tab .ico { width:16px; height:16px; border-radius:4px; background:#ddd; }
+  .phone .tabbar .tab.on { color:#4a6cf7; }
+  .phone .tabbar .tab.on .ico { background:#4a6cf7; }
+
+  .label { text-align:center; font-size:13px; font-weight:600; margin-top:10px; }
+  .note { text-align:center; font-size:11px; color:#999; margin-top:4px; line-height:1.5; }
+
+  /* wireframe primitives */
+  .blk { background:#e4e7ed; border-radius:4px; }
+  .img { background:#e4e7ed; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:9px; }
+  .txt { height:8px; background:#e4e7ed; border-radius:3px; }
+  .row { display:flex; align-items:center; }
+  .btn { background:#4a6cf7; color:#fff; border-radius:14px; text-align:center; font-size:10px; padding:6px 0; }
+  .btn.plain { background:#fff; color:#666; border:1px solid #ddd; }
+  .btn.danger { background:#ee5340; }
+  .tag { display:inline-block; font-size:8px; background:#e8edff; color:#4a6cf7; border-radius:3px; padding:1px 5px; }
+  .anno { position:absolute; font-size:9px; color:#ee5340; background:#fff5f4; border:1px dashed #ee5340; border-radius:4px; padding:2px 6px; z-index:5; }
+
+  /* 首页 */
+  .search { margin:8px 10px; height:26px; background:#fff; border-radius:13px; display:flex; align-items:center; padding:0 12px; font-size:9px; color:#bbb; }
+  .banner { margin:0 10px; height:96px; }
+  .cats { display:flex; margin:10px; gap:6px; }
+  .cats .cat { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; font-size:8px; color:#888; }
+  .cats .cat .c-ico { width:30px; height:30px; border-radius:50%; }
+  .goods-grid { display:flex; flex-wrap:wrap; padding:0 10px; gap:8px; }
+  .goods-grid .g { width:calc(50% - 4px); background:#fff; border-radius:6px; overflow:hidden; padding-bottom:6px; }
+  .goods-grid .g .g-img { height:74px; border-radius:0; }
+  .goods-grid .g .g-name { margin:4px 6px 3px; width:70%; }
+  .goods-grid .g .g-price { margin:0 6px; width:40%; height:9px; background:#f6d9d5; }
+
+  /* 分类 */
+  .cat-layout { display:flex; height:100%; }
+  .cat-left { width:70px; background:#f0f1f5; flex:none; }
+  .cat-left .cl { height:38px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#777; }
+  .cat-left .cl.on { background:#fff; color:#4a6cf7; font-weight:600; border-left:3px solid #4a6cf7; }
+  .cat-right { flex:1; padding:8px; background:#fff; }
+  .cat-right .cr-title { font-size:10px; font-weight:600; margin:4px 0 8px; }
+  .cr-grid { display:flex; flex-wrap:wrap; gap:8px; }
+  .cr-grid .cr { width:calc(33.3% - 6px); text-align:center; font-size:8px; color:#888; }
+  .cr-grid .cr .cr-img { height:44px; border-radius:6px; margin-bottom:3px; }
+
+  /* 商品详情 */
+  .d-hero { height:210px; border-radius:0; }
+  .d-price-row { background:#fff; padding:10px; }
+  .d-price { width:34%; height:12px; background:#f6d9d5; border-radius:3px; }
+  .d-name { margin-top:6px; width:85%; }
+  .d-card { background:#fff; margin-top:8px; padding:10px; }
+  .d-sku-row { display:flex; justify-content:space-between; align-items:center; font-size:10px; color:#777; }
+  .detail-imgs { padding:10px; display:flex; flex-direction:column; gap:6px; }
+  .d-bottom { position:absolute; bottom:0; left:0; right:0; height:44px; background:#fff; border-top:1px solid #eee; display:flex; align-items:center; padding:0 10px; gap:8px; }
+  .d-bottom .mini { width:34px; text-align:center; font-size:8px; color:#999; }
+  .d-bottom .mini .m-ico { width:18px; height:18px; border-radius:4px; background:#eee; margin:0 auto 2px; }
+  .d-bottom .act { flex:1; }
+
+  /* SKU 弹层 */
+  .mask { position:absolute; inset:0; background:rgba(0,0,0,.45); z-index:8; }
+  .sheet { position:absolute; left:0; right:0; bottom:0; background:#fff; border-radius:12px 12px 0 0; z-index:9; padding:12px; height:340px; }
+  .sheet .s-head { display:flex; gap:8px; }
+  .sheet .s-img { width:64px; height:64px; flex:none; }
+  .spec-group { margin-top:10px; }
+  .spec-group .sg-name { font-size:10px; color:#777; margin-bottom:6px; }
+  .spec-vals { display:flex; flex-wrap:wrap; gap:6px; }
+  .spec-vals .sv { font-size:9px; padding:4px 10px; background:#f2f3f5; border-radius:10px; color:#555; }
+  .spec-vals .sv.on { background:#e8edff; color:#4a6cf7; border:1px solid #4a6cf7; }
+  .num-row { display:flex; justify-content:space-between; align-items:center; margin-top:12px; font-size:10px; color:#777; }
+  .stepper { display:flex; }
+  .stepper span { width:20px; height:20px; background:#f2f3f5; display:flex; align-items:center; justify-content:center; font-size:10px; }
+  .stepper .n { width:30px; background:#fafafa; }
+
+  /* 购物车 */
+  .cart-item { display:flex; background:#fff; margin:8px 10px 0; border-radius:8px; padding:10px; gap:8px; align-items:center; }
+  .ck { width:14px; height:14px; border-radius:50%; border:1px solid #ccc; flex:none; }
+  .ck.on { background:#4a6cf7; border-color:#4a6cf7; }
+  .cart-item .ci-img { width:56px; height:56px; flex:none; }
+  .cart-item .ci-mid { flex:1; }
+  .cart-item .ci-name { width:90%; margin-bottom:4px; }
+  .cart-item .ci-spec { width:55%; height:7px; }
+  .cart-item .ci-bot { display:flex; justify-content:space-between; align-items:center; margin-top:6px; }
+  .cart-item .ci-price { width:34px; height:9px; background:#f6d9d5; border-radius:3px; }
+  .cart-bar { position:absolute; bottom:0; left:0; right:0; height:44px; background:#fff; border-top:1px solid #eee; display:flex; align-items:center; padding:0 10px; gap:8px; }
+  .cart-bar .total { flex:1; }
+  .cart-bar .total .t1 { width:60%; height:9px; background:#f6d9d5; border-radius:3px; }
+  .cart-bar .checkout { width:84px; flex:none; }
+
+  /* 确认订单 */
+  .addr-card { background:#fff; margin:8px 10px 0; border-radius:8px; padding:10px; display:flex; align-items:center; gap:8px; }
+  .addr-card .a-ico { width:24px; height:24px; border-radius:50%; flex:none; }
+  .addr-card .a-mid { flex:1; }
+  .addr-card .a-l1 { width:55%; margin-bottom:4px; }
+  .addr-card .a-l2 { width:85%; height:7px; }
+  .co-item { display:flex; background:#fff; margin:8px 10px 0; border-radius:8px; padding:10px; gap:8px; }
+  .co-item .ci-img { width:48px; height:48px; flex:none; }
+  .co-line { background:#fff; margin-top:8px; padding:10px; display:flex; justify-content:space-between; font-size:10px; color:#777; }
+  .co-bar { position:absolute; bottom:0; left:0; right:0; height:44px; background:#fff; border-top:1px solid #eee; display:flex; align-items:center; padding:0 10px; gap:8px; }
+
+  /* 收银台 */
+  .cash { padding:30px 20px 0; text-align:center; }
+  .cash .amount { width:50%; height:22px; margin:0 auto; background:#f6d9d5; border-radius:4px; }
+  .cash .countdown { margin-top:8px; font-size:9px; color:#bbb; }
+  .pay-way { background:#fff; margin:16px 10px 0; border-radius:8px; padding:4px 10px; }
+  .pay-way .pw { display:flex; align-items:center; gap:8px; padding:10px 0; border-bottom:1px solid #f2f2f2; font-size:10px; color:#555; }
+  .pay-way .pw:last-child { border-bottom:none; }
+  .pay-way .pw .pw-ico { width:20px; height:20px; border-radius:4px; flex:none; }
+  .pay-way .pw .radio { margin-left:auto; }
+  .radio { width:13px; height:13px; border-radius:50%; border:1px solid #ccc; }
+  .radio.on { background:#4a6cf7; border-color:#4a6cf7; }
+
+  /* 订单列表 */
+  .o-tabs { display:flex; background:#fff; border-bottom:1px solid #eee; }
+  .o-tabs .ot { flex:1; text-align:center; font-size:10px; color:#888; padding:8px 0; }
+  .o-tabs .ot.on { color:#4a6cf7; font-weight:600; border-bottom:2px solid #4a6cf7; }
+  .o-card { background:#fff; margin:8px 10px 0; border-radius:8px; padding:10px; }
+  .o-card .o-head { display:flex; justify-content:space-between; font-size:9px; color:#999; margin-bottom:8px; }
+  .o-card .o-status { color:#ee9f2e; }
+  .o-card .o-item { display:flex; gap:8px; margin-bottom:6px; }
+  .o-card .o-item .oi-img { width:44px; height:44px; flex:none; }
+  .o-card .o-foot { display:flex; justify-content:flex-end; gap:6px; margin-top:8px; }
+  .o-card .o-foot .ob { width:60px; }
+
+  /* 订单详情时间线 */
+  .tl { padding:12px; }
+  .tl .tl-item { display:flex; gap:8px; position:relative; padding-bottom:16px; }
+  .tl .tl-item::before { content:''; position:absolute; left:4px; top:12px; bottom:-2px; width:1px; background:#e0e0e0; }
+  .tl .tl-item:last-child::before { display:none; }
+  .tl .dot { width:9px; height:9px; border-radius:50%; background:#ccc; flex:none; margin-top:2px; z-index:1; }
+  .tl .dot.on { background:#4a6cf7; }
+  .tl .tl-txt { flex:1; font-size:9px; color:#888; }
+  .tl .tl-txt .tt { font-size:10px; color:#444; font-weight:600; margin-bottom:2px; }
+
+  /* 我的 */
+  .me-head { background:linear-gradient(135deg,#4a6cf7,#7a9bff); padding:22px 14px 30px; display:flex; align-items:center; gap:10px; }
+  .me-head .avatar { width:48px; height:48px; border-radius:50%; background:#fff3; flex:none; }
+  .me-head .me-name { width:90px; height:10px; background:#fff5; border-radius:4px; }
+  .me-card { background:#fff; margin:-18px 10px 0; border-radius:8px; padding:10px; position:relative; }
+  .me-order-row { display:flex; }
+  .me-order-row .mo { flex:1; text-align:center; font-size:9px; color:#888; }
+  .me-order-row .mo .mo-ico { width:20px; height:20px; border-radius:5px; background:#eee; margin:0 auto 3px; }
+  .me-menu { background:#fff; margin:8px 10px 0; border-radius:8px; }
+  .me-menu .mm { display:flex; justify-content:space-between; padding:10px; font-size:10px; color:#555; border-bottom:1px solid #f4f4f4; }
+  .me-menu .mm:last-child { border-bottom:none; }
+
+  /* 领券 */
+  .coupon { display:flex; margin:8px 10px 0; background:#fff; border-radius:8px; overflow:hidden; }
+  .coupon .c-left { width:82px; flex:none; background:linear-gradient(135deg,#ff7a59,#ee5340); display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; }
+  .coupon .c-left .c-amt { width:60%; height:14px; background:#fff3; border-radius:3px; }
+  .coupon .c-left .c-th { font-size:8px; margin-top:4px; opacity:.85; }
+  .coupon .c-mid { flex:1; padding:10px; }
+  .coupon .c-mid .cm-name { width:70%; margin-bottom:5px; }
+  .coupon .c-mid .cm-time { width:50%; height:7px; }
+  .coupon .c-right { width:56px; flex:none; display:flex; align-items:center; justify-content:center; padding:6px; }
+
+  /* 登录 */
+  .login-logo { width:52px; height:52px; border-radius:12px; margin:44px auto 8px; }
+  .login-tabs { display:flex; justify-content:center; gap:24px; font-size:11px; color:#999; margin:14px 0 20px; }
+  .login-tabs .lt.on { color:#4a6cf7; font-weight:600; }
+  .login-form { padding:0 30px; }
+  .login-form .lf { height:34px; background:#fff; border:1px solid #e5e6eb; border-radius:17px; margin-bottom:12px; display:flex; align-items:center; padding:0 14px; font-size:9px; color:#ccc; }
+
+  .flow { margin-top:40px; background:#fff; border-radius:10px; padding:20px; }
+  .flow h3 { font-size:14px; margin-bottom:14px; }
+  .flow-steps { display:flex; flex-wrap:wrap; align-items:center; gap:6px; font-size:11px; }
+  .flow-steps .fs { background:#e8edff; color:#4a6cf7; border-radius:5px; padding:5px 10px; font-weight:600; }
+  .flow-steps .fs.gray { background:#f2f3f5; color:#999; }
+  .flow-steps .arr { color:#bbb; }
+</style>
+</head>
+<body>
+
+<h1>mall-shop H5 · V3 页面线框效果图</h1>
+<div class="sub">2026-10-29 · 对应《商城-V3-C端商城-规划.md》S4 · 红字为交互标注 · 底部 tab：首页 / 分类 / 购物车 / 我的</div>
+
+<div class="group-title">一、认证</div>
+<div class="board">
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>5G ▮</span></div>
+      <div class="body" style="background:#fff;">
+        <div class="login-logo blk"></div>
+        <div class="txt" style="width:80px;height:10px;margin:0 auto;"></div>
+        <div class="login-tabs"><span class="lt on">登录</span><span class="lt">注册</span></div>
+        <div class="login-form">
+          <div class="lf">手机号</div>
+          <div class="lf">密码（6~20位）</div>
+          <div class="btn" style="border-radius:17px;padding:9px 0;margin-top:6px;">登 录</div>
+          <div style="text-align:center;font-size:9px;color:#bbb;margin-top:12px;">未注册手机号将引导先注册</div>
+        </div>
+      </div>
+      <div class="anno" style="top:246px;right:8px;">登录成功存 member token<br>跳来源页或首页</div>
+    </div>
+    <div class="label">登录 / 注册</div>
+    <div class="note">POST /shop/auth/login<br>POST /shop/auth/register</div>
+  </div>
+
+</div>
+
+<div class="group-title">二、浏览（匿名可访问）</div>
+<div class="board">
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>5G ▮</span></div>
+      <div class="body">
+        <div class="search">搜索商品</div>
+        <div class="banner img">banner 轮播<br>/shop/banners</div>
+        <div class="cats">
+          <div class="cat"><div class="c-ico blk"></div>类目</div>
+          <div class="cat"><div class="c-ico blk"></div>类目</div>
+          <div class="cat"><div class="c-ico blk"></div>类目</div>
+          <div class="cat"><div class="c-ico blk"></div>类目</div>
+          <div class="cat"><div class="c-ico blk"></div>类目</div>
+        </div>
+        <div class="goods-grid">
+          <div class="g"><div class="g-img img"></div><div class="g-name txt"></div><div class="g-price"></div></div>
+          <div class="g"><div class="g-img img"></div><div class="g-name txt"></div><div class="g-price"></div></div>
+          <div class="g"><div class="g-img img"></div><div class="g-name txt"></div><div class="g-price"></div></div>
+          <div class="g"><div class="g-img img"></div><div class="g-name txt"></div><div class="g-price"></div></div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab on"><div class="ico"></div>首页</div>
+        <div class="tab"><div class="ico"></div>分类</div>
+        <div class="tab"><div class="ico"></div>购物车</div>
+        <div class="tab"><div class="ico"></div>我的</div>
+      </div>
+    </div>
+    <div class="label">首页</div>
+    <div class="note">/shop/banners + /shop/categories + /shop/goods<br>商品流下拉加载更多</div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>5G ▮</span></div>
+      <div class="navbar">分类</div>
+      <div class="body">
+        <div class="cat-layout">
+          <div class="cat-left">
+            <div class="cl on">一级A</div><div class="cl">一级B</div><div class="cl">一级C</div><div class="cl">一级D</div>
+          </div>
+          <div class="cat-right">
+            <div class="cr-title">二级类目</div>
+            <div class="cr-grid">
+              <div class="cr"><div class="cr-img blk"></div>子类</div>
+              <div class="cr"><div class="cr-img blk"></div>子类</div>
+              <div class="cr"><div class="cr-img blk"></div>子类</div>
+              <div class="cr"><div class="cr-img blk"></div>子类</div>
+              <div class="cr"><div class="cr-img blk"></div>子类</div>
+              <div class="cr"><div class="cr-img blk"></div>子类</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab"><div class="ico"></div>首页</div>
+        <div class="tab on"><div class="ico"></div>分类</div>
+        <div class="tab"><div class="ico"></div>购物车</div>
+        <div class="tab"><div class="ico"></div>我的</div>
+      </div>
+    </div>
+    <div class="label">分类（两级联动）</div>
+    <div class="note">/shop/categories 树<br>点二级类目 → 商品列表页（categoryId）</div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>5G ▮</span></div>
+      <div class="navbar"><span class="back">‹</span>商品详情</div>
+      <div class="body" style="background:#fff;">
+        <div class="d-hero img">轮播图 sliderImages</div>
+        <div class="d-price-row">
+          <div class="d-price"></div>
+          <div class="d-name txt"></div>
+          <div class="txt" style="width:50%;margin-top:4px;height:7px;"></div>
+        </div>
+        <div class="d-card">
+          <div class="d-sku-row"><span>选择 规格</span><span style="color:#ccc;">›</span></div>
+        </div>
+        <div class="d-card"><div class="d-sku-row"><span>商品详情</span></div>
+          <div class="detail-imgs"><div class="blk" style="height:40px;"></div><div class="blk" style="height:40px;"></div></div>
+        </div>
+        <div class="d-bottom">
+          <div class="mini"><div class="m-ico"></div>购物车</div>
+          <div class="btn plain act">加入购物车</div>
+          <div class="btn act">立即购买</div>
+        </div>
+      </div>
+    </div>
+    <div class="label">商品详情</div>
+    <div class="note">/shop/goods/{id}<br>底部固定操作栏；加购未登录 → 跳登录</div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>5G ▮</span></div>
+      <div class="navbar"><span class="back">‹</span>商品详情</div>
+      <div class="body">
+        <div class="mask"></div>
+        <div class="sheet">
+          <div class="s-head">
+            <div class="s-img img"></div>
+            <div style="flex:1;">
+              <div class="txt" style="width:44%;height:11px;background:#f6d9d5;"></div>
+              <div class="txt" style="width:70%;margin-top:5px;height:7px;"></div>
+              <div class="txt" style="width:36%;margin-top:5px;height:7px;"></div>
+            </div>
+          </div>
+          <div class="spec-group">
+            <div class="sg-name">颜色</div>
+            <div class="spec-vals"><span class="sv on">黑色</span><span class="sv">白色</span><span class="sv">蓝色</span></div>
+          </div>
+          <div class="spec-group">
+            <div class="sg-name">尺码</div>
+            <div class="spec-vals"><span class="sv">S</span><span class="sv on">M</span><span class="sv">L</span></div>
+          </div>
+          <div class="num-row"><span>购买数量（库存 128）</span>
+            <div class="stepper"><span>−</span><span class="n">1</span><span>＋</span></div>
+          </div>
+          <div class="btn" style="margin-top:14px;padding:8px 0;">确 定</div>
+        </div>
+      </div>
+      <div class="anno" style="top:100px;left:50%;transform:translateX(-50%);">价格/库存随 SKU 组合切换<br>无货组合置灰</div>
+    </div>
+    <div class="label">SKU 选择弹层</div>
+    <div class="note">specJson 解析出规格组<br>确定 → 加购 / 立即购买</div>
+  </div>
+
+</div>
+
+<div class="group-title">三、交易链路</div>
+<div class="board">
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>5G ▮</span></div>
+      <div class="navbar">购物车</div>
+      <div class="body">
+        <div class="cart-item">
+          <div class="ck on"></div><div class="ci-img img"></div>
+          <div class="ci-mid">
+            <div class="ci-name txt"></div><div class="ci-spec txt"></div>
+            <div class="ci-bot"><div class="ci-price"></div><div class="stepper"><span>−</span><span class="n">2</span><span>＋</span></div></div>
+          </div>
+        </div>
+        <div class="cart-item">
+          <div class="ck on"></div><div class="ci-img img"></div>
+          <div class="ci-mid">
+            <div class="ci-name txt"></div><div class="ci-spec txt"></div>
+            <div class="ci-bot"><div class="ci-price"></div><div class="stepper"><span>−</span><span class="n">1</span><span>＋</span></div></div>
+          </div>
+        </div>
+        <div class="cart-item" style="opacity:.45;">
+          <div class="ck"></div><div class="ci-img img"></div>
+          <div class="ci-mid">
+            <div class="ci-name txt"></div>
+            <div class="tag" style="margin-top:4px;">已下架</div>
+          </div>
+        </div>
+        <div class="cart-bar">
+          <div class="ck on"></div><span style="font-size:9px;color:#888;">全选</span>
+          <div class="total"><div class="t1"></div></div>
+          <div class="btn checkout">结算(3)</div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab"><div class="ico"></div>首页</div>
+        <div class="tab"><div class="ico"></div>分类</div>
+        <div class="tab on"><div class="ico"></div>购物车</div>
+        <div class="tab"><div class="ico"></div>我的</div>
+      </div>
+      <div class="anno" style="top:230px;right:6px;">下架行置灰不参与结算</div>
+    </div>
+    <div class="label">购物车</div>
+    <div class="note">/shop/cart/list · 改量超库存 toast<br>左滑删除；结算 → 确认订单</div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>5G ▮</span></div>
+      <div class="navbar"><span class="back">‹</span>确认订单</div>
+      <div class="body">
+        <div class="addr-card">
+          <div class="a-ico blk"></div>
+          <div class="a-mid"><div class="a-l1 txt"></div><div class="a-l2 txt"></div></div>
+          <span style="color:#ccc;">›</span>
+        </div>
+        <div class="co-item">
+          <div class="ci-img img" style="width:48px;height:48px;"></div>
+          <div style="flex:1;"><div class="txt" style="width:80%;"></div><div class="txt" style="width:40%;margin-top:5px;height:7px;"></div></div>
+          <div style="text-align:right;"><div class="txt" style="width:30px;background:#f6d9d5;"></div><div class="txt" style="width:24px;margin-top:5px;height:7px;"></div></div>
+        </div>
+        <div class="co-line"><span>优惠券</span><span style="color:#ee5340;">-¥10 ▾</span></div>
+        <div class="co-line"><span>运费</span><span>免运费</span></div>
+        <div class="co-line"><span>买家留言</span><span style="color:#ccc;">选填 ›</span></div>
+        <div class="co-line" style="margin-top:0;border-top:1px solid #f4f4f4;"><span>共2件 小计</span><span style="color:#ee5340;font-weight:600;">¥288.00</span></div>
+        <div class="co-bar">
+          <div style="flex:1;"><div class="txt" style="width:55%;height:10px;background:#f6d9d5;"></div></div>
+          <div class="btn" style="width:96px;">提交订单</div>
+        </div>
+      </div>
+      <div class="anno" style="top:64px;right:6px;">无地址显示「+ 新建地址」</div>
+    </div>
+    <div class="label">确认订单</div>
+    <div class="note">/shop/order/confirm 预览<br>提交 /shop/order/submit → 收银台</div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>5G ▮</span></div>
+      <div class="navbar"><span class="back">‹</span>收银台</div>
+      <div class="body">
+        <div class="cash">
+          <div style="font-size:10px;color:#999;margin-bottom:10px;">支付金额（元）</div>
+          <div class="amount"></div>
+          <div class="countdown">订单号 M20261029… · mock 渠道</div>
+        </div>
+        <div class="pay-way">
+          <div class="pw"><div class="pw-ico blk"></div>模拟支付（秒到账）<div class="radio on"></div></div>
+          <div class="pw" style="opacity:.4;"><div class="pw-ico blk"></div>微信支付（V4 接入）<div class="radio"></div></div>
+        </div>
+        <div style="padding:20px 16px;"><div class="btn" style="padding:9px 0;">确认支付</div></div>
+      </div>
+      <div class="anno" style="top:330px;right:6px;">重复点击幂等<br>返回 replay=true 提示已支付</div>
+    </div>
+    <div class="label">收银台（mock 支付）</div>
+    <div class="note">POST /shop/pay/mock<br>成功 → 支付结果页 → 我的订单</div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>5G ▮</span></div>
+      <div class="navbar"><span class="back">‹</span>我的订单</div>
+      <div class="body">
+        <div class="o-tabs">
+          <div class="ot on">全部</div><div class="ot">待付款</div><div class="ot">待发货</div><div class="ot">待收货</div><div class="ot">已完成</div>
+        </div>
+        <div class="o-card">
+          <div class="o-head"><span>M20261029…</span><span class="o-status">待付款</span></div>
+          <div class="o-item"><div class="oi-img img"></div><div style="flex:1;"><div class="txt" style="width:75%;"></div><div class="txt" style="width:36%;margin-top:5px;height:7px;"></div></div></div>
+          <div class="o-foot"><div class="btn plain ob">取消</div><div class="btn ob">去支付</div></div>
+        </div>
+        <div class="o-card">
+          <div class="o-head"><span>M20261028…</span><span class="o-status">已发货</span></div>
+          <div class="o-item"><div class="oi-img img"></div><div style="flex:1;"><div class="txt" style="width:75%;"></div><div class="txt" style="width:36%;margin-top:5px;height:7px;"></div></div></div>
+          <div class="o-foot"><div class="btn ob">确认收货</div></div>
+        </div>
+      </div>
+      <div class="anno" style="top:120px;right:6px;">按钮按状态显隐：<br>10→取消/去支付<br>30→确认收货</div>
+    </div>
+    <div class="label">我的订单</div>
+    <div class="note">/shop/order/page?status=<br>状态码 10/20/30/40/50</div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>5G ▮</span></div>
+      <div class="navbar"><span class="back">‹</span>订单详情</div>
+      <div class="body">
+        <div style="background:#4a6cf7;padding:14px;color:#fff;font-size:12px;font-weight:600;">已发货 <span style="font-size:9px;font-weight:400;opacity:.8;">顺丰 SF123…</span></div>
+        <div class="addr-card" style="margin-top:0;border-radius:0;">
+          <div class="a-ico blk"></div>
+          <div class="a-mid"><div class="a-l1 txt"></div><div class="a-l2 txt"></div></div>
+        </div>
+        <div class="o-card" style="margin-top:8px;">
+          <div class="o-item"><div class="oi-img img"></div><div style="flex:1;"><div class="txt" style="width:75%;"></div><div class="txt" style="width:36%;margin-top:5px;height:7px;"></div></div></div>
+          <div class="co-line" style="padding:6px 0 0;margin-top:4px;border-top:1px solid #f4f4f4;"><span>实付</span><span style="color:#ee5340;">¥288.00</span></div>
+        </div>
+        <div style="background:#fff;margin:8px 10px 0;border-radius:8px;">
+          <div style="padding:10px 10px 0;font-size:10px;font-weight:600;">订单动态</div>
+          <div class="tl">
+            <div class="tl-item"><div class="dot on"></div><div class="tl-txt"><div class="tt">已发货</div>10-29 14:20</div></div>
+            <div class="tl-item"><div class="dot"></div><div class="tl-txt"><div class="tt">已支付（mock）</div>10-29 10:05</div></div>
+            <div class="tl-item"><div class="dot"></div><div class="tl-txt"><div class="tt">订单创建</div>10-29 10:00</div></div>
+          </div>
+        </div>
+        <div class="co-bar"><div style="flex:1;"></div><div class="btn" style="width:96px;">确认收货</div></div>
+      </div>
+    </div>
+    <div class="label">订单详情</div>
+    <div class="note">/shop/order/{id} 含 items+logs<br>时间线 = mall_order_log 升序</div>
+  </div>
+
+</div>
+
+<div class="group-title">四、我的 / 地址 / 领券</div>
+<div class="board">
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>5G ▮</span></div>
+      <div class="body">
+        <div class="me-head"><div class="avatar"></div><div class="me-name"></div></div>
+        <div class="me-card">
+          <div style="font-size:10px;font-weight:600;margin-bottom:8px;">我的订单</div>
+          <div class="me-order-row">
+            <div class="mo"><div class="mo-ico"></div>待付款</div>
+            <div class="mo"><div class="mo-ico"></div>待发货</div>
+            <div class="mo"><div class="mo-ico"></div>待收货</div>
+            <div class="mo"><div class="mo-ico"></div>已完成</div>
+            <div class="mo"><div class="mo-ico"></div>全部</div>
+          </div>
+        </div>
+        <div class="me-menu">
+          <div class="mm"><span>收货地址</span><span style="color:#ccc;">›</span></div>
+          <div class="mm"><span>优惠券</span><span style="color:#ccc;">›</span></div>
+          <div class="mm"><span>编辑资料</span><span style="color:#ccc;">›</span></div>
+          <div class="mm"><span>退出登录</span><span style="color:#ccc;">›</span></div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab"><div class="ico"></div>首页</div>
+        <div class="tab"><div class="ico"></div>分类</div>
+        <div class="tab"><div class="ico"></div>购物车</div>
+        <div class="tab on"><div class="ico"></div>我的</div>
+      </div>
+    </div>
+    <div class="label">我的</div>
+    <div class="note">/shop/auth/profile<br>未登录显示「点击登录」</div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>5G ▮</span></div>
+      <div class="navbar"><span class="back">‹</span>收货地址</div>
+      <div class="body">
+        <div style="background:#fff;margin:8px 10px 0;border-radius:8px;padding:10px;">
+          <div class="txt" style="width:50%;"></div>
+          <div class="txt" style="width:85%;margin-top:5px;height:7px;"></div>
+          <div class="row" style="justify-content:space-between;margin-top:8px;">
+            <span class="tag">默认</span>
+            <span style="font-size:9px;color:#999;">编辑 &nbsp; 删除</span>
+          </div>
+        </div>
+        <div style="background:#fff;margin:8px 10px 0;border-radius:8px;padding:10px;">
+          <div class="txt" style="width:50%;"></div>
+          <div class="txt" style="width:85%;margin-top:5px;height:7px;"></div>
+          <div class="row" style="justify-content:flex-end;margin-top:8px;">
+            <span style="font-size:9px;color:#999;">设为默认 &nbsp; 编辑 &nbsp; 删除</span>
+          </div>
+        </div>
+        <div style="padding:16px;"><div class="btn" style="padding:9px 0;">+ 新建地址</div></div>
+      </div>
+      <div class="anno" style="top:200px;right:6px;">仅本人地址（member_id 隔离）<br>首条自动设默认</div>
+    </div>
+    <div class="label">地址管理</div>
+    <div class="note">/shop/address CRUD<br>下单页选择地址也进此页</div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span>5G ▮</span></div>
+      <div class="navbar"><span class="back">‹</span>领券中心 <span class="tag" style="position:absolute;right:12px;">P1</span></div>
+      <div class="body">
+        <div class="coupon">
+          <div class="c-left"><div class="c-amt"></div><div class="c-th">满200可用</div></div>
+          <div class="c-mid"><div class="cm-name txt"></div><div class="cm-time txt"></div></div>
+          <div class="c-right"><div class="btn" style="width:44px;padding:5px 0;">领取</div></div>
+        </div>
+        <div class="coupon">
+          <div class="c-left"><div class="c-amt"></div><div class="c-th">无门槛</div></div>
+          <div class="c-mid"><div class="cm-name txt"></div><div class="cm-time txt"></div></div>
+          <div class="c-right"><div class="btn plain" style="width:44px;padding:5px 0;">已领</div></div>
+        </div>
+        <div class="coupon" style="opacity:.45;">
+          <div class="c-left"><div class="c-amt"></div><div class="c-th">满500可用</div></div>
+          <div class="c-mid"><div class="cm-name txt"></div><div class="cm-time txt"></div></div>
+          <div class="c-right"><div class="btn plain" style="width:44px;padding:5px 0;">已抢光</div></div>
+        </div>
+      </div>
+      <div class="anno" style="top:230px;right:6px;">限领/抢光/过期均置灰<br>下单页可选可用券</div>
+    </div>
+    <div class="label">领券中心（P1）</div>
+    <div class="note">/shop/coupon/center + /receive<br>我的券 /shop/coupon/my</div>
+  </div>
+
+</div>
+
+<div class="flow">
+  <h3>核心购物链路（验收主线）</h3>
+  <div class="flow-steps">
+    <span class="fs">注册/登录</span><span class="arr">→</span>
+    <span class="fs">首页/分类浏览</span><span class="arr">→</span>
+    <span class="fs">商品详情选 SKU</span><span class="arr">→</span>
+    <span class="fs">加购</span><span class="arr">→</span>
+    <span class="fs">购物车结算</span><span class="arr">→</span>
+    <span class="fs">确认订单(选地址/券)</span><span class="arr">→</span>
+    <span class="fs">提交订单</span><span class="arr">→</span>
+    <span class="fs">mock 支付</span><span class="arr">→</span>
+    <span class="fs gray">后台发货(mall-web)</span><span class="arr">→</span>
+    <span class="fs">确认收货</span><span class="arr">→</span>
+    <span class="fs">订单完成</span>
+  </div>
+</div>
+
+</body>
+</html>

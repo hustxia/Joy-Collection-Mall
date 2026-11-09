@@ -1,0 +1,10 @@
+# 仅 nginx 构建用根上下文：只需要三端源码，其余全部排除
+.git
+docs
+audit
+.screenshots
+**/node_modules
+**/dist
+be/
+**/*.log
+uploads/

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>售后闭环 - PC 申请售后（订单详情内）</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif; background: #f4f5f7; color: #303133; padding: 0 0 40px; }
+  .shop-header { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.04); height: 72px; display: flex; align-items: center; }
+  .header-inner { width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 32px; }
+  .logo-text { font-size: 24px; font-weight: 700; color: #e1251b; letter-spacing: 2px; }
+  .logo-sub { font-size: 12px; color: #909399; }
+  .nav-links { display: flex; gap: 24px; font-size: 14px; color: #606266; }
+  .nav-links .on { color: #e1251b; font-weight: 600; }
+  .shop-main { width: 1200px; margin: 20px auto; display: flex; gap: 16px; }
+  .side { width: 200px; flex-shrink: 0; background: #fff; border-radius: 8px; padding: 8px 0; }
+  .side a { display: block; padding: 12px 24px; font-size: 14px; color: #303133; }
+  .side a.on { background: #fdf0ef; color: #e1251b; font-weight: 600; border-right: 2px solid #e1251b; }
+  .content { flex: 1; }
+  .card { background: #fff; border-radius: 8px; padding: 20px 24px; margin-bottom: 16px; }
+  .crumb { font-size: 13px; color: #909399; margin-bottom: 14px; }
+  .crumb b { color: #303133; }
+  .status-line { display: flex; justify-content: space-between; align-items: center; }
+  .status-big { font-size: 20px; font-weight: 700; color: #303133; }
+  .tag-refund { display: inline-block; padding: 3px 10px; border-radius: 3px; font-size: 12px; background: #fef0f0; color: #e1251b; margin-left: 10px; font-weight: 500; }
+  .btn-apply { background: #e1251b; color: #fff; border: none; border-radius: 4px; padding: 10px 22px; font-size: 14px; cursor: pointer; }
+  .goods-row { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f3f5; }
+  .goods-row img { width: 64px; height: 64px; border-radius: 6px; background: #f2f3f5; }
+  .goods-row .n { font-size: 14px; }
+  .goods-row .s { font-size: 12px; color: #909399; margin-top: 4px; }
+  .goods-row .p { margin-left: auto; font-size: 14px; color: #e1251b; font-weight: 600; }
+  .pay-line { display: flex; justify-content: flex-end; gap: 24px; padding-top: 14px; font-size: 14px; }
+  .pay-line b { color: #e1251b; font-size: 18px; }
+  /* 弹窗 */
+  .mask { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; }
+  .dialog { width: 560px; background: #fff; border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,.2); }
+  .dlg-header { padding: 18px 24px; border-bottom: 1px solid #f2f3f5; display: flex; justify-content: space-between; align-items: center; }
+  .dlg-header .t { font-size: 16px; font-weight: 700; }
+  .dlg-header .x { color: #909399; cursor: pointer; font-size: 18px; }
+  .dlg-body { padding: 20px 24px; }
+  .form-item { margin-bottom: 18px; }
+  .form-item label { display: block; font-size: 13px; color: #606266; margin-bottom: 8px; }
+  .form-item label em { color: #e1251b; font-style: normal; margin-right: 2px; }
+  .radio-cards { display: flex; gap: 12px; }
+  .radio-card { flex: 1; border: 1px solid #dcdfe6; border-radius: 6px; padding: 12px; font-size: 14px; text-align: center; cursor: pointer; color: #606266; }
+  .radio-card.on { border-color: #e1251b; color: #e1251b; background: #fdf0ef; font-weight: 600; }
+  .radio-card .d { display: block; font-size: 12px; color: #909399; font-weight: 400; margin-top: 4px; }
+  .amount-box { background: #fafafa; border-radius: 6px; padding: 12px 16px; font-size: 13px; color: #606266; display: flex; justify-content: space-between; }
+  .amount-box b { color: #e1251b; font-size: 16px; }
+  textarea { width: 100%; border: 1px solid #dcdfe6; border-radius: 4px; min-height: 80px; padding: 10px 12px; font-size: 13px; resize: none; font-family: inherit; }
+  .uploader { display: flex; gap: 10px; }
+  .up-item { width: 72px; height: 72px; border-radius: 6px; position: relative; }
+  .up-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
+  .up-add { border: 1px dashed #dcdfe6; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #c0c4cc; font-size: 26px; cursor: pointer; }
+  .up-tip { font-size: 12px; color: #909399; margin-top: 6px; }
+  .dlg-footer { padding: 14px 24px; border-top: 1px solid #f2f3f5; text-align: right; }
+  .dlg-footer .btn { padding: 9px 20px; border-radius: 4px; font-size: 14px; border: 1px solid #dcdfe6; background: #fff; color: #606266; cursor: pointer; margin-left: 10px; }
+  .dlg-footer .btn.primary { background: #e1251b; border-color: #e1251b; color: #fff; }
+</style>
+</head>
+<body>
+  <div class="shop-header">
+    <div class="header-inner">
+      <div><div class="logo-text">悦集商城</div><div class="logo-sub">YUEJI MALL</div></div>
+      <div class="nav-links">
+        <span>首页</span><span>全部商品</span><span class="on">我的订单</span><span>领券中心</span><span>购物车</span>
+      </div>
+    </div>
+  </div>
+  <div class="shop-main">
+    <div class="side">
+      <a>个人中心</a><a class="on">我的订单</a><a>我的售后</a><a>我的优惠券</a><a>收货地址</a>
+    </div>
+    <div class="content">
+      <div class="card">
+        <div class="crumb">我的订单 / <b>订单详情</b></div>
+        <div class="status-line">
+          <div>
+            <span class="status-big">已完成</span><span class="tag-refund">可申请售后</span>
+          </div>
+          <button class="btn-apply">申请售后</button>
+        </div>
+        <div style="margin-top: 16px;">
+          <div class="goods-row">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect fill='%23e8ebf5' width='64' height='64'/%3E%3Ctext x='32' y='38' text-anchor='middle' font-size='20' fill='%23a9b4d6'%3E手机%3C/text%3E%3C/svg%3E">
+            <div>
+              <div class="n">悦集 X7 Pro 旗舰手机</div>
+              <div class="s">颜色:曜石黑 / 存储:12G+256G ×4</div>
+            </div>
+            <div class="p">¥159,960.00</div>
+          </div>
+          <div class="pay-line">
+            <span>商品总额 ¥159,960.00</span><span>优惠 −¥1,500.00</span>
+            <span>实付 <b>¥159,810.00</b></span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;margin-bottom:10px;">订单信息</div>
+        <div style="font-size:13px;color:#606266;line-height:2;">
+          订单号：M20261029110110174213　　支付单号：MOCK20261029110110346346　　支付方式：mock 渠道<br>
+          收货人：PC联调 139****9943　　浙江省杭州市西湖区文三路 100 号
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mask">
+    <div class="dialog">
+      <div class="dlg-header"><span class="t">申请售后</span><span class="x">×</span></div>
+      <div class="dlg-body">
+        <div class="form-item">
+          <label><em>*</em>售后类型</label>
+          <div class="radio-cards">
+            <div class="radio-card on">仅退款<span class="d">未收到货或不需退回</span></div>
+            <div class="radio-card">退货退款<span class="d">已收到货，退回后退款</span></div>
+          </div>
+        </div>
+        <div class="form-item">
+          <label>退款金额（整单全额，不可修改）</label>
+          <div class="amount-box"><span>订单实付金额</span><b>¥159,810.00</b></div>
+        </div>
+        <div class="form-item">
+          <label><em>*</em>售后原因</label>
+          <textarea placeholder="请详细描述您遇到的问题（必填，200 字以内）">手机屏幕右下角有轻微划痕，与全新描述不符。</textarea>
+        </div>
+        <div class="form-item" style="margin-bottom: 4px;">
+          <label>凭证图（选填，最多 6 张）</label>
+          <div class="uploader">
+            <div class="up-item"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Crect fill='%23eef1f8' width='72' height='72'/%3E%3Ctext x='36' y='40' text-anchor='middle' font-size='11' fill='%23a9b4d6'%3E凭证1%3C/text%3E%3C/svg%3E"></div>
+            <div class="up-add">+</div>
+          </div>
+          <div class="up-tip">支持 jpg/png/webp，单张不超过 5MB</div>
+        </div>
+      </div>
+      <div class="dlg-footer">
+        <button class="btn">取 消</button>
+        <button class="btn primary">提交申请</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

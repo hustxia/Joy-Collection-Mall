@@ -1,0 +1,39 @@
+# ---- Java / Maven ----
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# ---- Node / 前端 ----
+node_modules/
+dist/
+*.local
+
+# ---- IDE ----
+.idea/
+.vscode/
+*.iml
+
+# ---- 运行时 ----
+logs/
+*.log
+uploads/
+
+# ---- 系统 ----
+.DS_Store
+Thumbs.db
+
+# ---- 本地冒烟凭证 / 整库导出（含业务数据，勿入库）----
+audit/*-token.env
+audit/*-dump.sql
+
+# ---- 临时验证脚本工作目录 ----
+.tmp-validate/
+
+# ---- 手册截图工作目录（成图已拷贝至 docs/系统功能手册/images/）----
+manual-shots/*.png
+
+# ---- 走查/诊断截图工作目录（diag-login 等脚本产出，不入库）----
+artifacts/
+manual-shots/.chrome-profile*
+manual-shots/.c2/

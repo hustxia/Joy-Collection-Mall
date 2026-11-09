@@ -1,0 +1,8 @@
+# Docker 构建上下文只需要各模块 target 下的可执行 jar，源码/测试/报告都不必进镜像
+**/src
+**/target/classes
+**/target/test-classes
+**/target/generated-sources
+**/target/generated-test-sources
+**/target/surefire-reports
+**/*.md

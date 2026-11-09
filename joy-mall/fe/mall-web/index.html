@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>悦集商城后台</title>
+  <!-- 内联空图标：免掉每个页面一次 /favicon.ico 404 -->
+  <link rel="icon" href="data:,">
+  <script>
+  // 存储沙箱垫片：部分内嵌容器（如 IDE 内置预览）用 sandbox iframe 且无 allow-same-origin，
+  // 访问 window.localStorage 会直接抛 SecurityError，应用启动即崩、整页白屏。
+  // 这里在业务代码运行前探测：被禁则用内存 Map 兜底（同一次加载内会话级有效）。
+  (function () {
+    try { window.localStorage.getItem('__probe__') } catch (e) {
+      var mem = {}
+      var shim = {
+        getItem: function (k) { return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null },
+        setItem: function (k, v) { mem[k] = String(v) },
+        removeItem: function (k) { delete mem[k] },
+        clear: function () { mem = {} },
+        key: function (i) { return Object.keys(mem)[i] || null },
+        get length() { return Object.keys(mem).length }
+      }
+      try { Object.defineProperty(window, 'localStorage', { value: shim, configurable: true }) } catch (e2) {}
+      try { Object.defineProperty(window, 'sessionStorage', { value: shim, configurable: true }) } catch (e3) {}
+    try { document.cookie } catch (ce) {
+      // 沙箱里 document.cookie 读取也抛 SecurityError（axios XSRF 逻辑会踩），降级为空 cookie
+      try { Object.defineProperty(document, 'cookie', { get: function () { return '' }, set: function () {}, configurable: true }) } catch (ce2) {}
+    }
+    }
+  })()
+  </script>
+</head>
+<body>
+  <noscript>请启用 JavaScript 后继续访问。</noscript>
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+# 测试 profile：独立库 yueji_mall_test（库名守卫强制 _test 结尾）+ 启动即建表
+# 覆盖各服务 application.yml 里的 spring.datasource.*，业务库 yueji_mall 永不被测试触碰
+spring:
+  datasource:
+    url: ${TEST_DB_URL:jdbc:mysql://127.0.0.1:3306/yueji_mall_test?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+    username: ${TEST_DB_USERNAME:root}
+    password: ${TEST_DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: always
+      encoding: UTF-8
+      schema-locations: classpath:schema-test.sql
+      data-locations: classpath:data-test.sql
+      continue-on-error: false
+
+# 定时任务在测试里必须静默：否则跨用例的「超时关单」会把别人造的待付款单关掉
+mall:
+  scheduler:
+    order-close:
+      enabled: false
+
+logging:
+  level:
+    root: warn
+    com.mall: warn
